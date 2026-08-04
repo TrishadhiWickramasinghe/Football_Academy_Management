@@ -5,10 +5,14 @@ import { Bell, Search, CircleUser } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { TenantSwitcher } from "@/components/layout/tenant-switcher"
 
 export function Header() {
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+      <div className="flex items-center gap-4">
+        <TenantSwitcher />
+      </div>
       <div className="w-full flex-1">
         <form>
           <div className="relative">

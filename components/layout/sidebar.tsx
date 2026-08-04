@@ -11,18 +11,24 @@ import {
   BarChart, 
   Settings, 
   Shield, 
-  Menu
+  Menu,
+  Heart,
+  Building,
+  Users2
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const NAV_ITEMS = [
   { name: "Dashboard", href: "/dashboard", icon: Activity },
   { name: "Players", href: "/dashboard/players", icon: Users },
+  { name: "Teams", href: "/dashboard/teams", icon: Users2 },
   { name: "Tournaments", href: "/dashboard/tournaments", icon: Trophy },
   { name: "Coaching", href: "/dashboard/coaching", icon: Shield },
-  { name: "Video Analysis", href: "/dashboard/video", icon: Play },
+  { name: "Video Analysis", href: "/dashboard/video-analysis", icon: Play },
+  { name: "Parents", href: "/dashboard/parents", icon: Heart },
   { name: "Finance", href: "/dashboard/finance", icon: CreditCard },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart },
+  { name: "Organisation", href: "/dashboard/organisation", icon: Building },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ]
 
