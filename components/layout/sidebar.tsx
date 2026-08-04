@@ -86,7 +86,8 @@ const getNavItems = (role: string | null) => {
     items.push(
       { name: "Dashboard", href: "/dashboard", icon: Activity },
       { name: "My Matches", href: "/dashboard/schedule", icon: Calendar },
-      { name: "Match Reports", href: "/dashboard/evaluations", icon: ClipboardList }
+      { name: "Match Reports", href: "/dashboard/evaluations", icon: ClipboardList },
+      { name: "Tournaments", href: "/dashboard/tournaments", icon: Trophy }
     );
   } else if (role === "ANALYST") {
     items.push(
