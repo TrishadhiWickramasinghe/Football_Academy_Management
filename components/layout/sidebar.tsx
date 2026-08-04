@@ -43,7 +43,15 @@ const getNavItems = (role: string | null): NavItem[] => {
       { name: "Users", href: "/dashboard/users", icon: Users },
       { name: "Subscriptions", href: "/dashboard/billing", icon: CreditCard },
       { name: "Analytics", href: "/dashboard/analytics", icon: BarChart },
-      { name: "System", href: "/dashboard/settings", icon: Settings }
+      { 
+        name: "System", 
+        icon: Settings,
+        subItems: [
+          { name: "General", href: "/dashboard/settings", icon: Settings },
+          { name: "Branding", href: "/dashboard/settings/branding", icon: Settings },
+          { name: "White-Label", href: "/dashboard/settings/white-label", icon: Settings }
+        ]
+      }
     );
   } else if (role === "ORG_ADMIN" || role === "CLUB_MANAGER") {
     items.push(
@@ -54,7 +62,15 @@ const getNavItems = (role: string | null): NavItem[] => {
       { name: "Players", href: "/dashboard/players", icon: Users },
       { name: "Parents", href: "/dashboard/parents", icon: Heart },
       { name: "Finance", href: "/dashboard/finance", icon: CreditCard },
-      { name: "Settings", href: "/dashboard/settings", icon: Settings }
+      { 
+        name: "Settings", 
+        icon: Settings,
+        subItems: [
+          { name: "General", href: "/dashboard/settings", icon: Settings },
+          { name: "Branding", href: "/dashboard/settings/branding", icon: Settings },
+          { name: "White-Label", href: "/dashboard/settings/white-label", icon: Settings }
+        ]
+      }
     );
   } else if (role === "HEAD_COACH") {
     items.push(
