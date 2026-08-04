@@ -18,6 +18,9 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/features/auth/contexts/AuthContext";
+import { TenantProvider } from "@/features/tenants/contexts/TenantContext";
+import { TenantBrandingProvider } from "@/features/tenants/contexts/TenantBrandingProvider";
+import { SupportModeBanner } from "@/features/tenants/components/SupportModeBanner";
 import { DevRoleSwitcher } from "@/components/dev/DevRoleSwitcher";
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -28,8 +31,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
-          {children}
-          <DevRoleSwitcher />
+          <TenantProvider>
+            <TenantBrandingProvider>
+              <SupportModeBanner />
+              {children}
+              <DevRoleSwitcher />
+            </TenantBrandingProvider>
+          </TenantProvider>
         </AuthProvider>
       </body>
     </html>

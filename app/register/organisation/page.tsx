@@ -56,19 +56,19 @@ export default function RegisterOrganisationPage() {
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-border -z-10 rounded-full"></div>
             <div 
               className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary -z-10 rounded-full transition-all duration-300"
-              style={{ width: \`\${(currentStep / (STEPS.length - 1)) * 100}%\` }}
+              style={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
             ></div>
             
             {STEPS.map((step, index) => (
               <div key={index} className="flex flex-col items-center gap-2 bg-muted/30">
                 <div 
-                  className={\`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors \${
+                  className={`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors ${
                     index < currentStep 
                       ? "bg-primary border-primary text-primary-foreground" 
                       : index === currentStep
                       ? "bg-background border-primary text-primary"
                       : "bg-background border-muted text-muted-foreground"
-                  }\`}
+                  }`}
                 >
                   {index < currentStep ? (
                     <CheckCircle2 className="h-5 w-5" />

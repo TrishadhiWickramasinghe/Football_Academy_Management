@@ -13,6 +13,9 @@
   --primary: #0f172a; /* Deep Navy */
   --primary-foreground: #f8fafc;
   
+  --tenant-primary: var(--primary);
+  --tenant-secondary: var(--secondary);
+  
   --secondary: #10b981; /* Emerald */
   --secondary-foreground: #ffffff;
   
