@@ -127,7 +127,7 @@ export default function Home() {
         </section>
 
         {/* 2. Problem -> Solution Section */}
-        <section id="platform" className="py-32 bg-muted/30 border-y border-border">
+        <section id="platform" className="py-32 bg-[#1c1e22] border-y border-border shadow-inner">
           <div className="container mx-auto px-4 md:px-8 max-w-7xl">
             <div className="text-center mb-20">
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">Stop managing chaos.</h2>
@@ -248,8 +248,20 @@ export default function Home() {
         </section>
 
         {/* 4. Scale Visualization */}
-        <section id="scale" className="py-32 bg-primary text-primary-foreground overflow-hidden relative">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
+        <section id="scale" className="py-32 text-primary-foreground overflow-hidden relative">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/football-03.jpg"
+              alt="Stadium background"
+              fill
+              className="object-cover opacity-30 mix-blend-luminosity"
+            />
+            {/* Gradient Overlay for a premium attractive look */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-secondary/80 mix-blend-multiply" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 via-transparent to-black/60" />
+          </div>
+          
           <div className="container mx-auto px-4 md:px-8 max-w-7xl relative z-10">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">From Local Academy to National Federation</h2>
@@ -290,33 +302,42 @@ export default function Home() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { name: "One Premier Academy", type: "Elite Youth Setup", domain: "opaacademy.academysphere.com", color: "bg-slate-900" },
-                { name: "Mexico City FC", type: "Professional Club Academy", domain: "academy.mcfc.mx", color: "bg-red-800" },
-                { name: "National Federation", type: "Governing Body", domain: "youth.federation.org", color: "bg-blue-900" }
+                { name: "One Premier Academy", type: "Elite Youth Setup", domain: "opaacademy.academysphere.com", color: "bg-gradient-to-br from-indigo-500 to-purple-600", shadow: "hover:shadow-[0_0_30px_rgba(99,102,241,0.2)]" },
+                { name: "Mexico City FC", type: "Professional Club Academy", domain: "academy.mcfc.mx", color: "bg-gradient-to-br from-rose-500 to-orange-600", shadow: "hover:shadow-[0_0_30px_rgba(244,63,94,0.2)]" },
+                { name: "National Federation", type: "Governing Body", domain: "youth.federation.org", color: "bg-gradient-to-br from-emerald-500 to-teal-600", shadow: "hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]" }
               ].map((tenant, i) => (
                 <motion.div 
                   key={i}
-                  whileHover={{ scale: 1.02 }}
-                  className="rounded-3xl border bg-card overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
+                  whileHover={{ y: -8 }}
+                  className={`rounded-3xl border border-border/50 bg-card overflow-hidden transition-all duration-300 ${tenant.shadow}`}
                 >
-                  <div className={`h-24 w-full ${tenant.color}`}></div>
+                  <div className={`h-28 w-full ${tenant.color} relative overflow-hidden`}>
+                    <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]"></div>
+                    <div className="absolute inset-0 bg-[url('/images/football-02.jpg')] opacity-20 mix-blend-overlay bg-cover bg-center"></div>
+                  </div>
                   <div className="p-8 relative">
-                    <div className={`absolute -top-10 left-8 h-16 w-16 rounded-xl ${tenant.color} border-4 border-card flex items-center justify-center shadow-sm`}>
-                      <Building2 className="h-8 w-8 text-white opacity-80" />
+                    <div className={`absolute -top-12 left-8 h-20 w-20 rounded-2xl ${tenant.color} border-4 border-card flex items-center justify-center shadow-lg`}>
+                      <Building2 className="h-10 w-10 text-white drop-shadow-md" />
                     </div>
-                    <div className="mt-6">
-                      <h3 className="text-xl font-bold mb-1">{tenant.name}</h3>
-                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-6">{tenant.type}</p>
+                    <div className="mt-8">
+                      <h3 className="text-2xl font-black mb-1 tracking-tight">{tenant.name}</h3>
+                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-6">{tenant.type}</p>
                       
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-sm">
-                          <CheckCircle2 className="h-4 w-4 text-success" /> Custom Branding Active
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3 text-sm font-medium">
+                          <div className="h-6 w-6 rounded-full bg-success/10 flex items-center justify-center">
+                            <CheckCircle2 className="h-4 w-4 text-success" />
+                          </div> 
+                          Custom Branding Active
                         </div>
-                        <div className="flex items-center gap-3 text-sm">
-                          <CheckCircle2 className="h-4 w-4 text-success" /> Secure Tenant Isolation
+                        <div className="flex items-center gap-3 text-sm font-medium">
+                          <div className="h-6 w-6 rounded-full bg-success/10 flex items-center justify-center">
+                            <CheckCircle2 className="h-4 w-4 text-success" />
+                          </div> 
+                          Secure Tenant Isolation
                         </div>
-                        <div className="mt-4 p-3 rounded-lg bg-muted font-mono text-xs text-muted-foreground flex items-center justify-between">
-                          {tenant.domain} <Globe className="h-4 w-4" />
+                        <div className="mt-6 p-4 rounded-xl bg-muted/50 border border-border font-mono text-xs text-muted-foreground flex items-center justify-between shadow-inner">
+                          {tenant.domain} <Globe className="h-4 w-4 text-primary" />
                         </div>
                       </div>
                     </div>
