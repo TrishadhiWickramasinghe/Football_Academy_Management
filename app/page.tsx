@@ -112,8 +112,8 @@ export default function Home() {
                   {['Player Development', 'AI Insights', 'Coach Training', 'Tournaments', 'Live Scores', 'Parent Portal', 'Payments', 'Analytics'].map((item, i) => (
                     <motion.div 
                       key={item}
-                      className="bg-card/80 backdrop-blur-sm border border-border shadow-lg rounded-xl p-4 flex items-center justify-center text-sm font-semibold text-muted-foreground hover:text-foreground hover:border-primary/50 hover:shadow-[0_0_15px_rgba(232,74,39,0.15)] transition-all"
-                      whileHover={{ y: -5 }}
+                      className="bg-black/80 backdrop-blur-md border border-primary/40 shadow-[0_4px_20px_rgba(232,74,39,0.15)] rounded-xl p-4 flex items-center justify-center text-sm font-bold text-primary hover:bg-primary hover:border-primary hover:text-white hover:shadow-[0_0_30px_rgba(232,74,39,0.5)] transition-all cursor-pointer"
+                      whileHover={{ y: -5, scale: 1.02 }}
                     >
                       {item}
                     </motion.div>
@@ -127,11 +127,24 @@ export default function Home() {
         </section>
 
         {/* 2. Problem -> Solution Section */}
-        <section id="platform" className="py-32 bg-[#1c1e22] border-y border-border shadow-inner">
-          <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+        <section id="platform" className="py-32 bg-slate-50 border-y border-border shadow-inner relative overflow-hidden">
+          {/* Left-side background image */}
+          <div className="absolute top-0 left-0 h-full w-1/2 md:w-[40%] z-0 pointer-events-none">
+            <Image
+              src="/images/football-04.avif"
+              alt="Football background left"
+              fill
+              className="object-cover opacity-80"
+            />
+            {/* Gradient to fade out the image towards the center and bottom, blending into the light background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-50/70 to-slate-50"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-transparent to-slate-50"></div>
+          </div>
+
+          <div className="container mx-auto px-4 md:px-8 max-w-7xl relative z-10">
             <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">Stop managing chaos.</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6 text-slate-900">Stop managing chaos.</h2>
+              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
                 Fragmented tools kill productivity. AcademySphere connects your entire organisation.
               </p>
             </div>
@@ -139,8 +152,8 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-16 items-center">
               {/* Before */}
               <div className="relative">
-                <div className="absolute -inset-4 bg-destructive/5 rounded-[2rem] blur-xl" />
-                <div className="relative border border-destructive/20 bg-background rounded-3xl p-8 shadow-sm">
+                <div className="absolute -inset-4 bg-destructive/10 rounded-[2rem] blur-xl" />
+                <div className="relative border border-destructive/20 bg-background text-foreground rounded-3xl p-8 shadow-sm">
                   <h3 className="text-lg font-bold text-destructive mb-8 flex items-center gap-2">
                     <span className="flex h-2 w-2 rounded-full bg-destructive"></span>
                     Before AcademySphere
@@ -166,7 +179,7 @@ export default function Home() {
               {/* After */}
               <div className="relative">
                 <div className="absolute -inset-4 bg-success/10 rounded-[2rem] blur-xl" />
-                <div className="relative border-2 border-primary/20 bg-card rounded-3xl p-8 shadow-xl">
+                <div className="relative border-2 border-primary/20 bg-card text-foreground rounded-3xl p-8 shadow-xl">
                   <h3 className="text-lg font-bold text-success mb-8 flex items-center gap-2">
                     <span className="flex h-2 w-2 rounded-full bg-success"></span>
                     With AcademySphere
@@ -196,9 +209,43 @@ export default function Home() {
         </section>
 
         {/* 3. Stakeholder Experience */}
-        <section id="stakeholders" className="py-32">
-          <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-            <div className="text-center mb-20">
+        <section id="stakeholders" className="py-32 relative overflow-hidden">
+          {/* Highly Animated Background Elements using Framer Motion */}
+          <div className="absolute inset-0 pointer-events-none z-0">
+            {/* Primary Orange Glow */}
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.2, 1],
+                x: [0, 100, 0],
+                y: [0, -50, 0]
+              }}
+              transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-10 left-1/4 w-[40rem] h-[40rem] bg-primary/20 rounded-full blur-[120px]" 
+            />
+            {/* Blue Admin Glow */}
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.3, 1],
+                x: [0, -100, 0],
+                y: [0, 80, 0]
+              }}
+              transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+              className="absolute bottom-10 right-1/4 w-[35rem] h-[35rem] bg-blue-500/20 rounded-full blur-[120px]" 
+            />
+            {/* Green Coach Glow */}
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.5, 1],
+                x: [0, 50, -50, 0],
+                y: [0, 50, -50, 0]
+              }}
+              transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 5 }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[30rem] bg-success/15 rounded-full blur-[150px]" 
+            />
+          </div>
+
+          <div className="container mx-auto px-4 md:px-8 max-w-7xl relative z-10">
+            <div className="text-center mb-20 relative">
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">One Platform. Every Stakeholder.</h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                 Purpose-built interfaces tailored to the needs of everyone involved in your academy.
@@ -226,17 +273,29 @@ export default function Home() {
               ].map((stakeholder, i) => (
                 <motion.div 
                   key={i} 
-                  whileHover={{ y: -8 }}
-                  className="group rounded-3xl border bg-card p-8 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300"
+                  initial={{ opacity: 0, y: 60, scale: 0.9 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 200, 
+                    damping: 15,
+                    delay: i * 0.15 
+                  }}
+                  whileHover={{ y: -12, scale: 1.02 }}
+                  className="group rounded-3xl border border-border/50 bg-card p-8 shadow-sm hover:shadow-2xl hover:border-primary/50 transition-colors duration-300 relative overflow-hidden backdrop-blur-xl bg-card/80"
                 >
-                  <div className={`mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl ${stakeholder.bg} ${stakeholder.color}`}>
-                    <stakeholder.icon className="h-7 w-7" />
+                  {/* Subtle background glow effect on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
+                  
+                  <div className={`mb-6 relative z-10 inline-flex h-16 w-16 items-center justify-center rounded-2xl ${stakeholder.bg} ${stakeholder.color} group-hover:scale-110 group-hover:rotate-[15deg] transition-all duration-300 ease-out shadow-sm`}>
+                    <stakeholder.icon className="h-8 w-8" />
                   </div>
-                  <h3 className="mb-6 text-2xl font-bold">{stakeholder.role}</h3>
-                  <ul className="space-y-4">
+                  <h3 className="mb-6 text-2xl font-bold relative z-10">{stakeholder.role}</h3>
+                  <ul className="space-y-4 relative z-10">
                     {stakeholder.features.map((feat, j) => (
-                      <li key={j} className="flex items-start gap-3 text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-                        <CheckCircle2 className={`h-5 w-5 shrink-0 ${stakeholder.color} opacity-70`} />
+                      <li key={j} className="flex items-start gap-3 text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                        <CheckCircle2 className={`h-5 w-5 shrink-0 ${stakeholder.color} opacity-70 group-hover:scale-110 transition-transform`} />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -291,16 +350,29 @@ export default function Home() {
         </section>
 
         {/* 5. Multi-Tenant Showcase */}
-        <section className="py-32">
-          <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-            <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">Every Organisation Gets Its Own AcademySphere</h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        <section className="py-32 relative overflow-hidden bg-slate-50 border-y border-border/50">
+          {/* Right-side background image */}
+          <div className="absolute top-0 right-0 h-full w-1/2 md:w-[40%] z-0 pointer-events-none">
+            <Image
+              src="/images/football-05.jpg"
+              alt="Football background right"
+              fill
+              className="object-cover opacity-80"
+            />
+            {/* Gradient to fade out the image towards the center and bottom */}
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-slate-50/70 to-slate-50"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-transparent to-slate-50"></div>
+          </div>
+
+          <div className="container mx-auto px-4 md:px-8 max-w-7xl relative z-10">
+            <div className="text-center mb-20 relative">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6 text-slate-900">Every Organisation Gets Its Own AcademySphere</h2>
+              <p className="text-xl text-slate-600 max-w-3xl mx-auto">
                 True white-label capability. Your domain, your colours, your logo, your data. Isolated and secure.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
               {[
                 { name: "One Premier Academy", type: "Elite Youth Setup", domain: "opaacademy.academysphere.com", color: "bg-gradient-to-br from-indigo-500 to-purple-600", shadow: "hover:shadow-[0_0_30px_rgba(99,102,241,0.2)]" },
                 { name: "Mexico City FC", type: "Professional Club Academy", domain: "academy.mcfc.mx", color: "bg-gradient-to-br from-rose-500 to-orange-600", shadow: "hover:shadow-[0_0_30px_rgba(244,63,94,0.2)]" },
@@ -309,7 +381,7 @@ export default function Home() {
                 <motion.div 
                   key={i}
                   whileHover={{ y: -8 }}
-                  className={`rounded-3xl border border-border/50 bg-card overflow-hidden transition-all duration-300 ${tenant.shadow}`}
+                  className={`rounded-3xl border border-slate-200 bg-card text-foreground overflow-hidden transition-all duration-300 ${tenant.shadow}`}
                 >
                   <div className={`h-28 w-full ${tenant.color} relative overflow-hidden`}>
                     <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]"></div>
