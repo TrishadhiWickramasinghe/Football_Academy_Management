@@ -1,5 +1,5 @@
 "use client"
-
+import React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
@@ -17,7 +17,8 @@ import {
   Building,
   Users2,
   Calendar,
-  ClipboardList
+  ClipboardList,
+  ChevronDown
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/features/auth/hooks/useAuth"
@@ -25,8 +26,15 @@ import { useTenant } from "@/features/tenants/contexts/TenantContext"
 import { TenantSwitcher } from "@/features/tenants/components/TenantSwitcher"
 
 // Role-based navigation maps
-const getNavItems = (role: string | null) => {
-  const items = [];
+export interface NavItem {
+  name: string;
+  href?: string;
+  icon: any;
+  subItems?: { name: string; href: string; icon: any }[];
+}
+
+const getNavItems = (role: string | null): NavItem[] => {
+  const items: NavItem[] = [];
   
   if (role === "SUPER_ADMIN") {
     items.push(
@@ -55,7 +63,18 @@ const getNavItems = (role: string | null) => {
       { name: "Coaching", href: "/dashboard/coaching/curriculum", icon: Shield },
       { name: "Players", href: "/dashboard/players", icon: Users },
       { name: "Evaluations", href: "/dashboard/evaluations", icon: ClipboardList },
-      { name: "Video Analysis", href: "/dashboard/video-analysis", icon: Play }
+      { name: "Video Analysis", href: "/dashboard/video-analysis", icon: Play },
+      { 
+        name: "Parent Portal", 
+        icon: Heart,
+        subItems: [
+          { name: "Children", href: "/dashboard/parent/children", icon: Heart },
+          { name: "Schedule", href: "/dashboard/parent/schedule", icon: Calendar },
+          { name: "Development", href: "/dashboard/parent/development", icon: BarChart },
+          { name: "Payments", href: "/dashboard/parent/payments", icon: CreditCard },
+          { name: "Highlights", href: "/dashboard/parent/highlights", icon: Play }
+        ]
+      }
     );
   } else if (role === "COACH") {
     items.push(
@@ -64,15 +83,27 @@ const getNavItems = (role: string | null) => {
       { name: "Training", href: "/dashboard/schedule", icon: Calendar },
       { name: "Attendance", href: "/dashboard/attendance", icon: ClipboardList },
       { name: "Evaluations", href: "/dashboard/evaluations", icon: ClipboardList },
-      { name: "Video", href: "/dashboard/video-analysis", icon: Play }
+      { name: "Video", href: "/dashboard/video-analysis", icon: Play },
+      { 
+        name: "Parent Portal", 
+        icon: Heart,
+        subItems: [
+          { name: "Children", href: "/dashboard/parent/children", icon: Heart },
+          { name: "Schedule", href: "/dashboard/parent/schedule", icon: Calendar },
+          { name: "Development", href: "/dashboard/parent/development", icon: BarChart },
+          { name: "Payments", href: "/dashboard/parent/payments", icon: CreditCard },
+          { name: "Highlights", href: "/dashboard/parent/highlights", icon: Play }
+        ]
+      }
     );
   } else if (role === "PARENT_GUARDIAN") {
     items.push(
       { name: "Home", href: "/dashboard", icon: Activity },
-      { name: "My Children", href: "/dashboard/players", icon: Heart },
-      { name: "Schedule", href: "/dashboard/schedule", icon: Calendar },
-      { name: "Development", href: "/dashboard/evaluations", icon: BarChart },
-      { name: "Payments", href: "/dashboard/finance", icon: CreditCard }
+      { name: "My Children", href: "/dashboard/parent/children", icon: Heart },
+      { name: "Schedule", href: "/dashboard/parent/schedule", icon: Calendar },
+      { name: "Development", href: "/dashboard/parent/development", icon: BarChart },
+      { name: "Payments", href: "/dashboard/parent/payments", icon: CreditCard },
+      { name: "Highlights", href: "/dashboard/parent/highlights", icon: Play }
     );
   } else if (role === "PLAYER") {
     items.push(
@@ -129,12 +160,17 @@ export function Sidebar() {
         <div className="flex-1 overflow-auto py-4">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4 gap-1">
             {navItems.map((item, index) => {
+              if (item.subItems) {
+                const isSubActive = item.subItems.some(sub => pathname === sub.href || pathname.startsWith(sub.href + '/'))
+                return <CollapsibleNavItem key={item.name} item={item} pathname={pathname} defaultOpen={isSubActive} />
+              }
+
               const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href + '/'))
               
               return (
                 <Link
                   key={item.name}
-                  href={item.href}
+                  href={item.href!}
                   className="relative flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors group"
                 >
                   {isActive && (
@@ -162,6 +198,47 @@ export function Sidebar() {
           </nav>
         </div>
       </div>
+    </div>
+  )
+}
+
+function CollapsibleNavItem({ item, pathname, defaultOpen }: { item: NavItem, pathname: string, defaultOpen: boolean }) {
+  const [isOpen, setIsOpen] = React.useState(defaultOpen)
+
+  return (
+    <div className="flex flex-col gap-1">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="relative flex items-center justify-between w-full gap-3 rounded-lg px-3 py-2.5 transition-colors text-muted-foreground hover:text-foreground group"
+      >
+        <div className="flex items-center gap-3">
+          <item.icon className="h-4 w-4 relative z-10 transition-colors group-hover:text-primary" />
+          <span className="relative z-10 font-medium transition-colors">
+            {item.name}
+          </span>
+        </div>
+        <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+      </button>
+      
+      {isOpen && item.subItems && (
+        <div className="flex flex-col gap-1 pl-9 mt-1 relative before:absolute before:left-5 before:top-0 before:bottom-2 before:w-[1px] before:bg-border">
+          {item.subItems.map((subItem) => {
+            const isActive = pathname === subItem.href || pathname.startsWith(subItem.href + '/')
+            return (
+              <Link
+                key={subItem.name}
+                href={subItem.href}
+                className={cn(
+                  "relative text-sm rounded-md px-3 py-2 transition-colors",
+                  isActive ? "text-primary font-semibold bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
+                {subItem.name}
+              </Link>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
