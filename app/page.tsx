@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { motion, useScroll, useTransform } from "framer-motion"
+import Image from "next/image"
+import { motion, useScroll, useTransform, Variants } from "framer-motion"
 import { 
   ArrowRight, Trophy, Users, Activity, Play, Shield, Globe, 
   ShieldCheck, Smartphone, Settings, BarChart, CreditCard, Building2,
@@ -15,7 +16,7 @@ export default function Home() {
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95])
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -23,13 +24,13 @@ export default function Home() {
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background selection:bg-primary/20">
+    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/30">
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between px-4 md:px-8 mx-auto max-w-7xl">
@@ -58,10 +59,17 @@ export default function Home() {
       <main className="flex-1 overflow-hidden">
         {/* 1. Hero Section */}
         <section className="relative pt-24 pb-32 lg:pt-32 lg:pb-40 flex items-center justify-center min-h-[90vh]">
-          {/* Animated Background Elements */}
-          <div className="absolute inset-0 -z-10 overflow-hidden">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <Image
+              src="/images/football-02.jpg"
+              alt="Soccer background"
+              fill
+              className="object-cover opacity-50"
+              priority
+            />
+            {/* Gradient Overlay for better text readability and blending into the next section */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
           </div>
 
           <div className="container mx-auto px-4 md:px-8 max-w-7xl relative z-10">
@@ -72,8 +80,8 @@ export default function Home() {
               animate="visible"
               style={{ opacity, scale }}
             >
-              <motion.div variants={itemVariants} className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary shadow-sm backdrop-blur-sm">
-                <span className="flex h-2 w-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
+              <motion.div variants={itemVariants} className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-5 py-2 text-sm font-bold text-primary shadow-lg shadow-primary/10 backdrop-blur-md uppercase tracking-wider">
+                <span className="flex h-2.5 w-2.5 rounded-full bg-primary mr-3 animate-pulse shadow-[0_0_8px_rgba(232,74,39,0.8)]"></span>
                 The Operating System for Modern Football Academies
               </motion.div>
               
@@ -87,13 +95,13 @@ export default function Home() {
               </motion.p>
               
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 pt-8">
-                <Button size="lg" className="rounded-full h-14 px-8 text-base shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all group" asChild>
+                <Button size="lg" className="rounded-full h-14 px-8 text-base font-bold shadow-[0_0_20px_rgba(232,74,39,0.3)] hover:shadow-[0_0_30px_rgba(232,74,39,0.5)] transition-all group border-b-4 border-black/20" asChild>
                   <Link href="/register/organisation">
                     Start Your Academy 
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="rounded-full h-14 px-8 text-base hover:bg-muted/50 transition-colors">
+                <Button size="lg" variant="outline" className="rounded-full h-14 px-8 text-base font-bold border-border/50 hover:bg-muted/50 hover:text-foreground transition-colors backdrop-blur-sm">
                   Explore the Platform
                 </Button>
               </motion.div>
@@ -104,7 +112,7 @@ export default function Home() {
                   {['Player Development', 'AI Insights', 'Coach Training', 'Tournaments', 'Live Scores', 'Parent Portal', 'Payments', 'Analytics'].map((item, i) => (
                     <motion.div 
                       key={item}
-                      className="bg-card border shadow-sm rounded-xl p-4 flex items-center justify-center text-sm font-semibold text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
+                      className="bg-card/80 backdrop-blur-sm border border-border shadow-lg rounded-xl p-4 flex items-center justify-center text-sm font-semibold text-muted-foreground hover:text-foreground hover:border-primary/50 hover:shadow-[0_0_15px_rgba(232,74,39,0.15)] transition-all"
                       whileHover={{ y: -5 }}
                     >
                       {item}
@@ -112,7 +120,7 @@ export default function Home() {
                   ))}
                 </div>
                 {/* Connecting lines abstraction */}
-                <div className="absolute inset-0 top-1/2 -translate-y-1/2 border-t border-b border-primary/10 -z-10 h-16 w-full blur-[1px]"></div>
+                <div className="absolute inset-0 top-1/2 -translate-y-1/2 border-t border-b border-secondary/20 -z-10 h-16 w-full blur-[1px]"></div>
               </motion.div>
             </motion.div>
           </div>

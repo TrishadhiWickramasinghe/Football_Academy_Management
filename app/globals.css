@@ -1,28 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #020617;
+  --background: #121212;
+  --foreground: #f8fafc;
   
-  --card: #ffffff;
-  --card-foreground: #020617;
+  --card: #1c1e22;
+  --card-foreground: #f8fafc;
   
-  --popover: #ffffff;
-  --popover-foreground: #020617;
+  --popover: #1c1e22;
+  --popover-foreground: #f8fafc;
   
-  --primary: #0f172a; /* Deep Navy */
-  --primary-foreground: #f8fafc;
+  --primary: #e84a27; /* Orange/Red Accent */
+  --primary-foreground: #ffffff;
   
   --tenant-primary: var(--primary);
   --tenant-secondary: var(--secondary);
   
-  --secondary: #10b981; /* Emerald */
+  --secondary: #166534; /* Dark Grass Green */
   --secondary-foreground: #ffffff;
   
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted: #272a30;
+  --muted-foreground: #a1a1aa;
   
-  --accent: #84cc16; /* Lime */
+  --accent: #22c55e; /* Bright Green */
   --accent-foreground: #020617;
   
   --destructive: #ef4444;
@@ -40,54 +40,54 @@
   --ai: #8b5cf6;
   --ai-foreground: #f8fafc;
 
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0f172a;
+  --border: #272a30;
+  --input: #272a30;
+  --ring: #e84a27;
 
-  --radius: 0.5rem;
+  --radius: 0.25rem; /* Sharper corners like the image */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #020617;
+    --background: #121212;
     --foreground: #f8fafc;
     
-    --card: #0f172a;
+    --card: #1c1e22;
     --card-foreground: #f8fafc;
     
-    --popover: #0f172a;
+    --popover: #1c1e22;
     --popover-foreground: #f8fafc;
     
-    --primary: #f8fafc;
-    --primary-foreground: #0f172a;
+    --primary: #e84a27;
+    --primary-foreground: #ffffff;
     
-    --secondary: #10b981;
+    --secondary: #166534;
     --secondary-foreground: #ffffff;
     
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
+    --muted: #272a30;
+    --muted-foreground: #a1a1aa;
     
-    --accent: #84cc16;
+    --accent: #22c55e;
     --accent-foreground: #020617;
     
-    --destructive: #7f1d1d;
+    --destructive: #ef4444;
     --destructive-foreground: #f8fafc;
 
-    --success: #166534;
+    --success: #22c55e;
     --success-foreground: #f8fafc;
     
-    --warning: #92400e;
+    --warning: #f59e0b;
     --warning-foreground: #f8fafc;
     
-    --info: #1e3a8a;
+    --info: #3b82f6;
     --info-foreground: #f8fafc;
     
-    --ai: #5b21b6;
+    --ai: #8b5cf6;
     --ai-foreground: #f8fafc;
     
-    --border: #1e293b;
-    --input: #1e293b;
-    --ring: #cbd5e1;
+    --border: #272a30;
+    --input: #272a30;
+    --ring: #e84a27;
   }
 }
 
