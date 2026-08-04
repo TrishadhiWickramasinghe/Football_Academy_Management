@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { WhiteLabelSettings } from "../types"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
+
 import { Loader2, Mail, ExternalLink, Smartphone } from "lucide-react"
 
 export function WhiteLabelSettingsForm({ initialSettings }: { initialSettings?: Partial<WhiteLabelSettings> }) {
@@ -94,10 +94,21 @@ export function WhiteLabelSettingsForm({ initialSettings }: { initialSettings?: 
               <p className="font-medium">Show AcademySphere Branding</p>
               <p className="text-sm text-muted-foreground">Toggle "Powered by AcademySphere" in the footer.</p>
             </div>
-            <Switch 
-              checked={settings.showAcademySphereBranding} 
-              onCheckedChange={(checked) => handleChange("showAcademySphereBranding", checked)}
-            />
+            <button
+              type="button"
+              role="switch"
+              aria-checked={settings.showAcademySphereBranding}
+              onClick={() => handleChange("showAcademySphereBranding", !settings.showAcademySphereBranding)}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 ${
+                settings.showAcademySphereBranding ? "bg-primary" : "bg-input"
+              }`}
+            >
+              <span
+                className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${
+                  settings.showAcademySphereBranding ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
           </div>
         </div>
       </div>

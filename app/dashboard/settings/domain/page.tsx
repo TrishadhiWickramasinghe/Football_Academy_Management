@@ -69,14 +69,8 @@ export default function DomainSettingsPage() {
   const isStarter = tenant.plan === "STARTER"
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Domain & Web Address</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage how your organisation is accessed online.
-          </p>
-        </div>
+    <div className="space-y-8 pt-4">
+      <div className="flex justify-end mb-4">
         {!isStarter && (
           <DomainSetupModal onDomainAdded={setDomain} />
         )}

@@ -29,13 +29,7 @@ export default function WhiteLabelSettingsPage() {
 
   if (!isWhiteLabelEnabled) {
     return (
-      <div className="max-w-4xl mx-auto space-y-8 p-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">White-Label Experience</h1>
-          <p className="text-muted-foreground mt-1">
-            Make AcademySphere completely yours.
-          </p>
-        </div>
+      <div className="space-y-8 pt-4">
         
         <div className="bg-slate-50 border rounded-xl p-8 text-center space-y-4 mt-8">
           <div className="mx-auto w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-4">
@@ -52,14 +46,7 @@ export default function WhiteLabelSettingsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">White-Label Experience</h1>
-        <p className="text-muted-foreground mt-1">
-          Make AcademySphere completely yours.
-        </p>
-      </div>
-      
+    <div className="space-y-8 pt-4">
       <WhiteLabelSettingsForm initialSettings={{
         tenantId: tenant.id,
         emailSenderName: tenant.emailSenderName,

@@ -51,14 +51,8 @@ export default function BrandingSettingsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 p-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Brand Identity</h1>
-          <p className="text-muted-foreground mt-1">
-            Customise the visual appearance of your AcademySphere environment.
-          </p>
-        </div>
+    <div className="space-y-8 pt-4">
+      <div className="flex justify-end border-b pb-4">
         <Button onClick={handleSave} disabled={isSaving}>
           {isSaving ? (
             <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</>
