@@ -40,23 +40,23 @@ export default function TeamsPage() {
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
-      className="p-4 lg:p-8 space-y-6 max-w-7xl mx-auto"
+      className="p-4 lg:p-8 space-y-6 bg-white min-h-[calc(100vh-4rem)] m-2 lg:m-4 rounded-3xl text-gray-900 shadow-lg border border-gray-100"
     >
       {/* ... header and filters ... */}
-      <motion.div variants={fadeUp} className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+      <motion.div variants={fadeUp} className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 pb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Teams</h1>
-          <p className="text-muted-foreground mt-1">Manage rosters, coaching staff, and schedules for your club.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 drop-shadow-sm">Teams</h1>
+          <p className="text-gray-600 mt-1">Manage rosters, coaching staff, and schedules for your club.</p>
         </div>
         
         <div className="flex items-center gap-3">
-          <select className="px-3 py-2 bg-muted/50 border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary">
+          <select className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none focus:ring-2 focus:ring-purple-500 text-gray-900">
             <option>Season 2025/2026</option>
             <option>Season 2024/2025</option>
           </select>
           <button 
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium text-sm hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
           >
             <Plus className="w-4 h-4" /> Create Team
           </button>
@@ -66,22 +66,22 @@ export default function TeamsPage() {
       {/* Toolbar */}
       <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 items-center">
         <div className="relative flex-1 w-full sm:max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input 
             type="text" 
             placeholder="Search teams..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-background border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary"
+            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 placeholder:text-gray-400"
           />
         </div>
         
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="w-4 h-4 text-muted-foreground hidden sm:block" />
+          <Filter className="w-4 h-4 text-gray-400 hidden sm:block" />
           <select 
             value={ageFilter}
             onChange={(e) => setAgeFilter(e.target.value)}
-            className="px-3 py-2 bg-background border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary w-full sm:w-auto"
+            className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none focus:ring-2 focus:ring-purple-500 w-full sm:w-auto text-gray-900"
           >
             <option value="All">All Ages</option>
             <option value="U12">U12</option>
@@ -93,7 +93,7 @@ export default function TeamsPage() {
           <select 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-background border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary w-full sm:w-auto"
+            className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm outline-none focus:ring-2 focus:ring-purple-500 w-full sm:w-auto text-gray-900"
           >
             <option value="All">All Statuses</option>
             <option value="Active">Active</option>

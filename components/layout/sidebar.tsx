@@ -160,17 +160,17 @@ export function Sidebar() {
   const navItems = getNavItems(role)
 
   return (
-    <div className="hidden border-r bg-muted/20 lg:block lg:w-64 lg:shrink-0 h-screen sticky top-0 overflow-hidden">
+    <div className="hidden border-r border-gray-200 bg-white lg:block lg:w-64 lg:shrink-0 h-screen sticky top-0 overflow-hidden shadow-sm">
       <div className="flex h-full flex-col">
-        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            {!tenant?.whiteLabelEnabled && <Trophy className="h-6 w-6 text-primary" />}
+        <div className="flex h-14 items-center border-b border-gray-200 px-4 lg:h-[60px] lg:px-6">
+          <Link href="/" className="flex items-center gap-2 font-bold text-gray-900">
+            {!tenant?.whiteLabelEnabled && <Trophy className="h-6 w-6 text-purple-600" />}
             <span className={cn(tenant?.whiteLabelEnabled && "font-bold text-lg")}>
               {tenant?.whiteLabelEnabled ? tenant.name : "AcademySphere"}
             </span>
           </Link>
         </div>
-        <div className="px-4 py-3 border-b">
+        <div className="px-4 py-3 border-b border-gray-200">
           <TenantSwitcher />
         </div>
         <div className="flex-1 overflow-auto py-4">
@@ -187,25 +187,25 @@ export function Sidebar() {
                 <Link
                   key={item.name}
                   href={item.href!}
-                  className="relative flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors group"
+                  className={cn(
+                    "relative flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors group",
+                    isActive ? "bg-purple-50 text-purple-700 font-semibold" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium"
+                  )}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="active-sidebar-nav"
-                      className="absolute inset-0 bg-primary/10 border-l-4 border-primary rounded-r-lg"
+                      className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-r-md"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
                   )}
                   
                   <item.icon className={cn(
-                    "h-4 w-4 relative z-10 transition-colors", 
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"
+                    "h-5 w-5 relative z-10 transition-colors", 
+                    isActive ? "text-purple-600" : "text-gray-400 group-hover:text-gray-600"
                   )} />
-                  <span className={cn(
-                    "relative z-10 font-medium transition-colors",
-                    isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
-                  )}>
+                  <span className="relative z-10">
                     {item.name}
                   </span>
                 </Link>
@@ -225,10 +225,10 @@ function CollapsibleNavItem({ item, pathname, defaultOpen }: { item: NavItem, pa
     <div className="flex flex-col gap-1">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative flex items-center justify-between w-full gap-3 rounded-lg px-3 py-2.5 transition-colors text-muted-foreground hover:text-foreground group"
+        className="relative flex items-center justify-between w-full gap-3 rounded-lg px-3 py-2.5 transition-colors text-gray-600 hover:bg-gray-50 hover:text-gray-900 group"
       >
         <div className="flex items-center gap-3">
-          <item.icon className="h-4 w-4 relative z-10 transition-colors group-hover:text-primary" />
+          <item.icon className="h-5 w-5 relative z-10 transition-colors text-gray-400 group-hover:text-gray-600" />
           <span className="relative z-10 font-medium transition-colors">
             {item.name}
           </span>
@@ -237,7 +237,7 @@ function CollapsibleNavItem({ item, pathname, defaultOpen }: { item: NavItem, pa
       </button>
       
       {isOpen && item.subItems && (
-        <div className="flex flex-col gap-1 pl-9 mt-1 relative before:absolute before:left-5 before:top-0 before:bottom-2 before:w-[1px] before:bg-border">
+        <div className="flex flex-col gap-1 pl-9 mt-1 relative before:absolute before:left-5 before:top-0 before:bottom-2 before:w-[2px] before:bg-gray-100">
           {item.subItems.map((subItem) => {
             const isActive = pathname === subItem.href || pathname.startsWith(subItem.href + '/')
             return (
@@ -246,7 +246,7 @@ function CollapsibleNavItem({ item, pathname, defaultOpen }: { item: NavItem, pa
                 href={subItem.href}
                 className={cn(
                   "relative text-sm rounded-md px-3 py-2 transition-colors",
-                  isActive ? "text-primary font-semibold bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  isActive ? "text-purple-700 font-bold bg-purple-50" : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 font-medium"
                 )}
               >
                 {subItem.name}
