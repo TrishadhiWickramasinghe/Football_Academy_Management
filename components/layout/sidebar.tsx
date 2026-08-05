@@ -171,7 +171,7 @@ export function Sidebar() {
           </Link>
         </div>
         <div className="px-4 py-3 border-b border-slate-800">
-          <div className="bg-slate-800/50 rounded-md p-1 border border-slate-700">
+          <div className="bg-slate-800/50 rounded-full p-1 border border-slate-700">
             <TenantSwitcher />
           </div>
         </div>
