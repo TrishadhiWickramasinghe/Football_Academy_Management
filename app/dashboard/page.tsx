@@ -1,218 +1,179 @@
-"use client"
+import React from 'react';
+import * as motion from 'framer-motion/client';
+import { fadeUp, staggerContainer } from '@/lib/utils/animations';
+import { Users, UserCheck, Calendar, DollarSign, Activity, Trophy } from 'lucide-react';
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Users, Activity, Trophy, CreditCard, BrainCircuit, Sparkles, TrendingUp, Zap, Target, LineChart } from "lucide-react"
-
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-}
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15
-    }
-  }
-}
-
-export default function DashboardPage() {
-  const [isMounted, setIsMounted] = useState(false)
-  
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  if (!isMounted) return null
-
+export default function OrganisationDashboardPage() {
   return (
     <motion.div 
-      className="flex flex-1 flex-col gap-6 md:gap-10 p-2 md:p-6"
-      variants={containerVariants}
       initial="hidden"
       animate="visible"
+      variants={staggerContainer}
+      className="p-4 lg:p-8 space-y-8"
     >
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <motion.div variants={fadeUp} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-primary dark:to-purple-400">
-            Academy Intelligence
-          </h1>
-          <p className="text-muted-foreground mt-1 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-500" />
-            AI-powered insights and academy overview
+          <h1 className="text-3xl font-bold tracking-tight">Organisation Dashboard</h1>
+          <p className="text-muted-foreground mt-1">Overview of your academy's performance and activities.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {/* Action buttons could go here */}
+          <button className="bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium text-sm hover:opacity-90 transition-opacity">
+            + New Player
+          </button>
+        </div>
+      </motion.div>
+
+      {/* KPI Grid */}
+      <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-6 bg-card border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-muted-foreground">Active Players</h3>
+            <Users className="w-4 h-4 text-info" />
+          </div>
+          <p className="text-3xl font-bold mt-2">248</p>
+          <p className="text-xs text-success mt-1 flex items-center">
+            <span className="font-medium">+12</span> this month
           </p>
         </div>
-        <Button className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:opacity-90 transition-opacity border-0 shadow-lg shadow-purple-500/25 text-white">
-          <BrainCircuit className="mr-2 h-4 w-4" />
-          Generate AI Report
-        </Button>
-      </motion.div>
-      
-      {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4">
-        {[
-          { title: "Total Players", value: "245", change: "+12", trend: "up", icon: Users, color: "from-blue-500 to-cyan-400" },
-          { title: "Performance Score", value: "94.2", change: "+2.4", trend: "up", icon: Target, color: "from-emerald-500 to-teal-400" },
-          { title: "Active Tournaments", value: "3", change: "1 ending", trend: "neutral", icon: Trophy, color: "from-orange-500 to-amber-400" },
-          { title: "Monthly Revenue", value: "$12,450", change: "+8%", trend: "up", icon: CreditCard, color: "from-purple-500 to-pink-400" },
-        ].map((stat, i) => (
-          <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
-            <Card className="relative overflow-hidden border-0 shadow-lg group">
-              <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-10 group-hover:opacity-20 transition-opacity duration-500`} />
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {stat.title}
-                </CardTitle>
-                <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color} text-white shadow-sm`}>
-                  <stat.icon className="h-4 w-4" />
-                </div>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <div className="text-3xl font-bold">{stat.value}</div>
-                <p className="text-xs font-medium text-emerald-500 flex items-center gap-1 mt-1">
-                  <TrendingUp className="w-3 h-3" />
-                  {stat.change} from last month
-                </p>
-              </CardContent>
-              {/* Decorative background element */}
-              <div className={`absolute -right-6 -bottom-6 w-24 h-24 bg-gradient-to-br ${stat.color} rounded-full blur-2xl opacity-20 group-hover:scale-150 transition-transform duration-700 ease-out`} />
-            </Card>
-          </motion.div>
-        ))}
-      </div>
 
-      <div className="grid gap-6 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        {/* AI Analysis Section */}
-        <motion.div variants={itemVariants} className="xl:col-span-2 h-full">
-          <Card className="h-full border-0 shadow-lg overflow-hidden relative">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
-            <CardHeader className="pb-4">
-              <div className="flex items-center justify-between">
+        <div className="p-6 bg-card border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-muted-foreground">Attendance Rate</h3>
+            <UserCheck className="w-4 h-4 text-success" />
+          </div>
+          <p className="text-3xl font-bold mt-2">92%</p>
+          <p className="text-xs text-success mt-1 flex items-center">
+            <span className="font-medium">+2%</span> vs last week
+          </p>
+        </div>
+
+        <div className="p-6 bg-card border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-muted-foreground">Active Teams</h3>
+            <Trophy className="w-4 h-4 text-accent" />
+          </div>
+          <p className="text-3xl font-bold mt-2">14</p>
+          <p className="text-xs text-muted-foreground mt-1 flex items-center">
+            Across 5 age groups
+          </p>
+        </div>
+
+        <div className="p-6 bg-card border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-muted-foreground">Monthly Revenue</h3>
+            <DollarSign className="w-4 h-4 text-success" />
+          </div>
+          <p className="text-3xl font-bold mt-2 text-success">$12,450</p>
+          <p className="text-xs text-warning mt-1 flex items-center">
+            <span className="font-medium">3 invoices</span> outstanding
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Main Content Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Left Column: Charts and Data */}
+        <motion.div variants={fadeUp} className="lg:col-span-2 space-y-6">
+          <div className="p-6 bg-card border rounded-xl shadow-sm h-[350px] flex flex-col items-center justify-center text-muted-foreground">
+             <Activity className="w-8 h-8 mb-2 opacity-50" />
+             <p>Player Growth & Revenue Chart (Placeholder)</p>
+             <p className="text-xs mt-2 max-w-sm text-center">In a full implementation, Recharts or Chart.js would be used here to display interactive visualisations.</p>
+          </div>
+          
+          <div className="p-6 bg-card border rounded-xl shadow-sm">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Recent Registrations</h2>
+              <button className="text-sm text-primary hover:underline">View All</button>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-muted-foreground uppercase bg-muted/50 rounded-t-lg">
+                  <tr>
+                    <th className="px-4 py-3 font-medium rounded-tl-lg">Player Name</th>
+                    <th className="px-4 py-3 font-medium">Age Group</th>
+                    <th className="px-4 py-3 font-medium">Status</th>
+                    <th className="px-4 py-3 font-medium rounded-tr-lg">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { name: 'Marcus Rashford', age: 'U14', status: 'Active', date: 'Today' },
+                    { name: 'Jude Bellingham', age: 'U16', status: 'Trial', date: 'Yesterday' },
+                    { name: 'Phil Foden', age: 'U12', status: 'Pending', date: 'Oct 12' },
+                  ].map((player, i) => (
+                    <tr key={i} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                      <td className="px-4 py-3 font-medium">{player.name}</td>
+                      <td className="px-4 py-3">{player.age}</td>
+                      <td className="px-4 py-3">
+                        <span className={`text-xs px-2 py-1 rounded-full 
+                          ${player.status === 'Active' ? 'bg-success/10 text-success' : 
+                            player.status === 'Trial' ? 'bg-info/10 text-info' : 'bg-warning/10 text-warning'}`}>
+                          {player.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">{player.date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Right Column: Upcoming Events & Activity */}
+        <motion.div variants={fadeUp} className="space-y-6">
+          <div className="p-6 bg-card border rounded-xl shadow-sm">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-primary" />
+              Today's Schedule
+            </h2>
+            <div className="space-y-4">
+              <div className="flex items-start gap-4 p-3 hover:bg-muted/50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-border">
+                <div className="flex flex-col items-center justify-center bg-muted rounded-md p-2 min-w-[50px]">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase">16:00</span>
+                </div>
                 <div>
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <BrainCircuit className="w-5 h-5 text-purple-500" />
-                    AI Performance Predictor
-                  </CardTitle>
-                  <CardDescription>Machine learning insights for upcoming fixtures</CardDescription>
-                </div>
-                <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/50 dark:text-purple-300 dark:border-purple-800">
-                  <Zap className="w-3 h-3 mr-1 fill-current" />
-                  Live Model
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-3 mb-6">
-                <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-inner">
-                  <div className="text-sm text-muted-foreground mb-1">Win Probability</div>
-                  <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">78%</div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: "78%" }}
-                      transition={{ duration: 1.5, delay: 0.5 }}
-                      className="bg-emerald-500 h-full rounded-full"
-                    />
-                  </div>
-                </div>
-                <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-inner">
-                  <div className="text-sm text-muted-foreground mb-1">Injury Risk</div>
-                  <div className="text-2xl font-bold text-amber-500">Low</div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: "15%" }}
-                      transition={{ duration: 1.5, delay: 0.7 }}
-                      className="bg-amber-500 h-full rounded-full"
-                    />
-                  </div>
-                </div>
-                <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-inner">
-                  <div className="text-sm text-muted-foreground mb-1">Tactical Match</div>
-                  <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">92%</div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: "92%" }}
-                      transition={{ duration: 1.5, delay: 0.9 }}
-                      className="bg-indigo-500 h-full rounded-full"
-                    />
-                  </div>
+                  <p className="text-sm font-medium">U14 Tactical Session</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Pitch 1 • Coach Smith</p>
                 </div>
               </div>
               
-              <div className="p-4 bg-primary/5 rounded-xl border border-primary/10 relative overflow-hidden">
-                <div className="absolute right-0 top-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16" />
-                <h4 className="font-semibold flex items-center gap-2 mb-2 text-primary">
-                  <Sparkles className="w-4 h-4" />
-                  AI Recommendation
-                </h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Based on recent training telemetry and opponent historical data, shifting to a 4-3-3 formation with high pressing in the first 20 minutes yields the highest probability of success. Key player readiness is optimal.
-                </p>
+              <div className="flex items-start gap-4 p-3 hover:bg-muted/50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-border">
+                <div className="flex flex-col items-center justify-center bg-muted rounded-md p-2 min-w-[50px]">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase">17:30</span>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">U16 High Performance</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Pitch 2 • Coach Davis</p>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <button className="w-full mt-4 py-2 text-sm bg-muted/50 hover:bg-muted rounded-md transition-colors font-medium">
+              View Full Schedule
+            </button>
+          </div>
+          
+          <div className="p-6 bg-card border rounded-xl shadow-sm">
+             <h2 className="text-xl font-semibold mb-4">Activity Feed</h2>
+             <div className="space-y-4">
+                <div className="relative pl-4 border-l-2 border-muted">
+                   <div className="absolute w-2 h-2 bg-success rounded-full -left-[5px] top-1.5 ring-4 ring-card"></div>
+                   <p className="text-sm">Payment of $150 received from <span className="font-medium">Sarah Jenkins</span>.</p>
+                   <p className="text-xs text-muted-foreground mt-1">10 minutes ago</p>
+                </div>
+                <div className="relative pl-4 border-l-2 border-muted">
+                   <div className="absolute w-2 h-2 bg-info rounded-full -left-[5px] top-1.5 ring-4 ring-card"></div>
+                   <p className="text-sm">Coach Davis submitted evaluation for <span className="font-medium">U16 Team</span>.</p>
+                   <p className="text-xs text-muted-foreground mt-1">2 hours ago</p>
+                </div>
+             </div>
+          </div>
         </motion.div>
-        
-        {/* Activity Feed */}
-        <motion.div variants={itemVariants} className="h-full">
-          <Card className="h-full border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-blue-500" />
-                System Activity
-              </CardTitle>
-              <CardDescription>Real-time academy updates</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              {[
-                { title: "Tactical analysis complete", desc: "U15 Elite vs. Rovers FC", time: "2 min ago", icon: LineChart, color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-900/30" },
-                { title: "New player registered", desc: "Mateo Hernandez joined U15 Elite.", time: "1 hour ago", icon: Users, color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-900/30" },
-                { title: "Payment processed", desc: "Monthly fees collected: $4,200", time: "3 hours ago", icon: CreditCard, color: "text-emerald-500", bg: "bg-emerald-100 dark:bg-emerald-900/30" },
-              ].map((activity, i) => (
-                <motion.div 
-                  key={i} 
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 1 + (i * 0.2) }}
-                  className="flex items-start gap-4 group"
-                >
-                  <div className={`w-10 h-10 rounded-full ${activity.bg} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
-                    <activity.icon className={`w-5 h-5 ${activity.color}`} />
-                  </div>
-                  <div className="grid gap-1">
-                    <p className="text-sm font-semibold leading-none">
-                      {activity.title}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {activity.desc}
-                    </p>
-                  </div>
-                  <div className="ml-auto font-medium text-xs text-muted-foreground shrink-0 whitespace-nowrap">
-                    {activity.time}
-                  </div>
-                </motion.div>
-              ))}
-            </CardContent>
-          </Card>
-        </motion.div>
+
       </div>
     </motion.div>
-  )
+  );
 }
