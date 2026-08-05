@@ -81,11 +81,11 @@ export function DataTable<T>({
       </div>
       
       {/* Table Pagination Placeholder */}
-      <div className="flex items-center justify-between px-2 text-xs text-muted-foreground">
+      <div className="flex items-center justify-between px-2 pt-2 text-xs font-medium text-gray-500">
         <span>Showing 1 to {data.length} of {data.length} entries</span>
-        <div className="flex items-center gap-1">
-          <button className="px-2 py-1 border rounded opacity-50 cursor-not-allowed">Previous</button>
-          <button className="px-2 py-1 border rounded opacity-50 cursor-not-allowed">Next</button>
+        <div className="flex items-center gap-2">
+          <button className="px-4 py-1.5 border border-gray-200 rounded-full font-bold text-gray-400 bg-gray-50 cursor-not-allowed transition-all">Previous</button>
+          <button className="px-4 py-1.5 border border-gray-200 rounded-full font-bold text-gray-700 bg-white shadow-sm hover:bg-gray-50 hover:text-gray-900 transition-all">Next</button>
         </div>
       </div>
     </div>
