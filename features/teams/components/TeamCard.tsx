@@ -1,6 +1,6 @@
 import React from 'react';
 import { Team } from '../types/team.types';
-import { Shield, MoreVertical, Users, MapPin, Trophy } from 'lucide-react';
+import { Shield, MoreVertical, Users, MapPin, Trophy, CalendarDays, Activity } from 'lucide-react';
 
 interface TeamCardProps {
   team: Team;
@@ -54,14 +54,35 @@ export function TeamCard({ team, onClick }: TeamCardProps) {
           </span>
         </div>
 
-        <div className="mt-4 space-y-2 text-sm text-gray-600">
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-gray-400" />
-            <span>{team.players.length} Players</span>
+        <div className="mt-4 space-y-3 text-sm text-gray-600">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-gray-400" />
+              <span>{team.players.length} Players</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-gray-400" />
+              <span>Coach: <span className="font-medium text-gray-900">{headCoach ? headCoach.name.split(' ')[0] : 'Unassigned'}</span></span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-gray-400" />
-            <span>Coach: <span className="font-medium text-gray-900">{headCoach ? headCoach.name : 'Unassigned'}</span></span>
+          
+          {/* New: Recent Form & Next Fixture */}
+          <div className="border-t border-gray-100 pt-3 flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-gray-500 font-medium uppercase tracking-wider flex items-center gap-1"><Activity className="w-3.5 h-3.5"/> Form</span>
+              <div className="flex gap-1">
+                {/* Mock Form Data: W, W, D, L, W */}
+                <span className="w-4 h-4 rounded-full bg-green-500 text-white text-[9px] font-bold flex items-center justify-center">W</span>
+                <span className="w-4 h-4 rounded-full bg-green-500 text-white text-[9px] font-bold flex items-center justify-center">W</span>
+                <span className="w-4 h-4 rounded-full bg-gray-300 text-gray-700 text-[9px] font-bold flex items-center justify-center">D</span>
+                <span className="w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">L</span>
+                <span className="w-4 h-4 rounded-full bg-green-500 text-white text-[9px] font-bold flex items-center justify-center">W</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-xs text-gray-500 font-medium uppercase tracking-wider flex items-center gap-1"><CalendarDays className="w-3.5 h-3.5"/> Next Match</span>
+              <span className="text-xs font-semibold text-gray-900">Sat, 10:00 AM</span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,43 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, ChevronRight, CheckCircle2, Shield, Palette, Settings, Image as ImageIcon } from 'lucide-react';
 import { useTeamStore } from '../store/useTeamStore';
-import { useForm } from 'react-hook-form';
 
 interface CreateTeamModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface FormValues {
-  name: string;
-  ageGroup: string;
-  division: string;
-  season: string;
-  homeVenue: string;
-  status: 'Active' | 'Inactive';
-}
+const PRESET_COLORS = [
+  '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e', '#10b981', 
+  '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7',
+  '#d946ef', '#ec4899', '#f43f5e', '#1e293b'
+];
 
 export function CreateTeamModal({ isOpen, onClose }: CreateTeamModalProps) {
   const { addTeam } = useTeamStore();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
-    defaultValues: {
-      season: '2025/2026',
-      status: 'Active'
-    }
+  const [step, setStep] = useState(1);
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    ageGroup: 'U16',
+    division: '',
+    season: '2025/2026',
+    homeVenue: '',
+    primaryColor: '#3b82f6',
+    crestUrl: ''
   });
 
-  const onSubmit = (data: FormValues) => {
+  const handleNext = () => setStep(s => Math.min(s + 1, 4));
+  const handleBack = () => setStep(s => Math.max(s - 1, 1));
+
+  const handleSubmit = () => {
     addTeam({
-      name: data.name,
-      ageGroup: data.ageGroup,
-      division: data.division,
-      season: data.season,
-      homeVenue: data.homeVenue,
-      status: data.status,
-      foundedDate: new Date().getFullYear().toString()
+      name: formData.name || 'New Team',
+      ageGroup: formData.ageGroup,
+      division: formData.division || 'Unassigned',
+      season: formData.season,
+      homeVenue: formData.homeVenue || 'Main Facility',
+      status: 'Active',
+      foundedDate: new Date().getFullYear().toString(),
+      kits: [{ type: 'Home', primaryColor: formData.primaryColor, secondaryColor: '#ffffff' }],
+      crestUrl: formData.crestUrl
     });
-    reset();
+    
+    // Reset state
+    setStep(1);
+    setFormData({
+      name: '', ageGroup: 'U16', division: '', season: '2025/2026', homeVenue: '', primaryColor: '#3b82f6', crestUrl: ''
+    });
+    
     onClose();
   };
 
@@ -45,93 +57,230 @@ export function CreateTeamModal({ isOpen, onClose }: CreateTeamModalProps) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+        onClick={onClose}
+      >
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-background rounded-xl shadow-xl w-full max-w-lg border overflow-hidden"
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          className="w-full max-w-2xl max-h-[90vh] bg-white shadow-2xl flex flex-col rounded-2xl overflow-hidden"
+          onClick={e => e.stopPropagation()}
         >
-          <div className="flex justify-between items-center p-6 border-b">
-            <h2 className="text-xl font-bold">Create New Team</h2>
-            <button onClick={onClose} className="p-1 hover:bg-muted rounded-md"><X className="w-5 h-5" /></button>
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-200" style={{ borderTop: `4px solid ${formData.primaryColor}` }}>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Create New Team</h2>
+              <p className="text-sm text-gray-500 mt-1">Step {step} of 4</p>
+            </div>
+            <button onClick={onClose} className="p-2 bg-gray-50 hover:bg-gray-100 text-gray-500 rounded-full transition-colors">
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          
-          <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Team Name</label>
-              <input 
-                {...register('name', { required: 'Team name is required' })} 
-                className="w-full px-3 py-2 bg-background border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary" 
-                placeholder="e.g. Manchester Utd U16"
-              />
-              {errors.name && <span className="text-xs text-destructive mt-1">{errors.name.message}</span>}
-            </div>
+
+          {/* Progress Bar */}
+          <div className="h-1.5 w-full bg-gray-100 flex">
+             <motion.div 
+                className="h-full"
+                style={{ backgroundColor: formData.primaryColor }}
+                initial={{ width: '25%' }}
+                animate={{ width: `${(step / 4) * 100}%` }}
+             />
+          </div>
+
+          {/* Scrollable Form Content */}
+          <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
             
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Age Group</label>
-                <select 
-                  {...register('ageGroup')} 
-                  className="w-full px-3 py-2 bg-background border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="U12">U12</option>
-                  <option value="U14">U14</option>
-                  <option value="U16">U16</option>
-                  <option value="Senior">Senior</option>
-                  <option value="Women's">Women's</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Division</label>
-                <input 
-                  {...register('division')} 
-                  className="w-full px-3 py-2 bg-background border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary" 
-                  placeholder="League Name"
-                />
-              </div>
-            </div>
+            {/* STEP 1: Identity */}
+            {step === 1 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><Shield className="w-5 h-5" /></div>
+                  <h3 className="font-bold text-lg text-gray-900">Team Identity</h3>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Team Name</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. Manchester Utd U16" 
+                    value={formData.name}
+                    onChange={e => setFormData({...formData, name: e.target.value})}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow" 
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Age Group</label>
+                    <select 
+                      value={formData.ageGroup}
+                      onChange={e => setFormData({...formData, ageGroup: e.target.value})}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow cursor-pointer"
+                    >
+                      <option value="U12">U12</option>
+                      <option value="U14">U14</option>
+                      <option value="U16">U16</option>
+                      <option value="Senior">Senior</option>
+                      <option value="Women's">Women's</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Division / League</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Premier League North"
+                      value={formData.division}
+                      onChange={e => setFormData({...formData, division: e.target.value})}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow" 
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Season</label>
-                <input 
-                  {...register('season')} 
-                  className="w-full px-3 py-2 bg-background border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary" 
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Status</label>
-                <select 
-                  {...register('status')} 
-                  className="w-full px-3 py-2 bg-background border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
-              </div>
-            </div>
+            {/* STEP 2: Operations */}
+            {step === 2 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-blue-100 text-blue-600 rounded-lg"><Settings className="w-5 h-5" /></div>
+                  <h3 className="font-bold text-lg text-gray-900">Operations</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-5">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Season</label>
+                    <select 
+                      value={formData.season}
+                      onChange={e => setFormData({...formData, season: e.target.value})}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                    >
+                      <option value="2025/2026">2025/2026</option>
+                      <option value="2024/2025">2024/2025</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Home Venue</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Training Pitch 1"
+                      value={formData.homeVenue}
+                      onChange={e => setFormData({...formData, homeVenue: e.target.value})}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Home Venue</label>
-              <input 
-                {...register('homeVenue')} 
-                className="w-full px-3 py-2 bg-background border rounded-md text-sm outline-none focus:ring-2 focus:ring-primary" 
-                placeholder="e.g. Pitch 1"
-              />
-            </div>
+            {/* STEP 3: Appearance */}
+            {step === 3 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg"><Palette className="w-5 h-5" /></div>
+                  <div>
+                    <h3 className="font-bold text-lg text-gray-900">Appearance</h3>
+                    <p className="text-sm text-gray-500">This color will theme the team's dashboard and profile.</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Primary Team Color</label>
+                  <div className="flex flex-wrap gap-3">
+                    {PRESET_COLORS.map(color => (
+                      <div 
+                        key={color}
+                        onClick={() => setFormData({...formData, primaryColor: color})}
+                        className={`w-10 h-10 rounded-full cursor-pointer transition-all ${formData.primaryColor === color ? 'ring-4 ring-offset-2 ring-gray-300 scale-110' : 'hover:scale-110'}`}
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="pt-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2"><ImageIcon className="w-4 h-4"/> Crest URL (Optional)</label>
+                  <input 
+                    type="url" 
+                    placeholder="https://example.com/logo.png"
+                    value={formData.crestUrl}
+                    onChange={e => setFormData({...formData, crestUrl: e.target.value})}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                  />
+                </div>
+              </motion.div>
+            )}
 
-            <div className="pt-4 flex justify-end gap-3 border-t">
-              <button type="button" onClick={onClose} className="px-4 py-2 border rounded-md text-sm font-medium hover:bg-muted transition-colors">
-                Cancel
+            {/* STEP 4: Summary */}
+            {step === 4 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-orange-100 text-orange-600 rounded-lg"><CheckCircle2 className="w-5 h-5" /></div>
+                  <h3 className="font-bold text-lg text-gray-900">Review & Create</h3>
+                </div>
+                
+                {/* Preview Card */}
+                <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+                  <div className="h-24 relative flex items-center px-6" style={{ background: `linear-gradient(135deg, ${formData.primaryColor} 0%, #1e1b4b 100%)` }}>
+                    <div className="absolute -bottom-6 left-6 bg-white p-1 rounded-xl shadow-sm border border-gray-100">
+                      {formData.crestUrl ? (
+                        <img src={formData.crestUrl} alt="crest" className="w-14 h-14 object-contain" />
+                      ) : (
+                        <div className="w-14 h-14 flex items-center justify-center bg-gray-50 rounded-lg text-gray-400">
+                          <Shield className="w-7 h-7" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="pt-10 pb-6 px-6 bg-white">
+                    <h3 className="text-xl font-bold text-gray-900">{formData.name || 'Untitled Team'}</h3>
+                    <p className="text-gray-500 mt-1">{formData.ageGroup} • {formData.division || 'No Division'}</p>
+                    <p className="text-sm text-gray-400 mt-3">{formData.homeVenue} • {formData.season}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+          </div>
+
+          {/* Footer Actions */}
+          <div className="p-6 border-t border-gray-200 flex items-center justify-between bg-gray-50">
+            {step > 1 ? (
+              <button 
+                onClick={handleBack}
+                className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                Back
               </button>
-              <button type="submit" className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:opacity-90 transition-opacity">
-                Create Team
+            ) : <div />}
+            
+            {step < 4 ? (
+              <button 
+                onClick={handleNext}
+                className="flex items-center gap-2 text-white px-8 py-3 rounded-full font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                style={{ backgroundColor: formData.primaryColor }}
+              >
+                Continue <ChevronRight className="w-4 h-4" />
               </button>
-            </div>
-          </form>
+            ) : (
+              <button 
+                onClick={handleSubmit}
+                className="flex items-center gap-2 text-white px-8 py-3 rounded-full font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                style={{ backgroundColor: formData.primaryColor }}
+              >
+                <CheckCircle2 className="w-4 h-4" /> Finalize Team
+              </button>
+            )}
+          </div>
+
         </motion.div>
-      </div>
+      </motion.div>
     </AnimatePresence>
   );
 }

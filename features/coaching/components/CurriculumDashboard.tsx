@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer } from '@/lib/utils/animations';
 import { BookOpen, Calendar, Target, Activity, Play, ChevronRight, Search, CheckCircle2, LayoutGrid, Clock, Users } from 'lucide-react';
 import { Drill, TrainingSession } from '../../types/coaching.types';
+import { CreatePlanDrawer } from './CreatePlanDrawer';
 
 // Mock Data
 const PILLARS = [
@@ -66,6 +67,13 @@ const DRILL_LIBRARY = [
 
 export function CurriculumDashboard() {
   const [search, setSearch] = useState('');
+  const [isBuilderOpen, setIsBuilderOpen] = useState(false);
+  const [upcomingSessions, setUpcomingSessions] = useState<TrainingSession[]>([UPCOMING_SESSION]);
+
+  const handleCreatePlan = (session: TrainingSession) => {
+    setUpcomingSessions([session, ...upcomingSessions]);
+    setIsBuilderOpen(false);
+  };
 
   return (
     <motion.div 
@@ -87,7 +95,7 @@ export function CurriculumDashboard() {
             <option>U14 Foundation Phase</option>
             <option>Senior First Team</option>
           </select>
-          <button className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+          <button onClick={() => setIsBuilderOpen(true)} className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
             <Target className="w-4 h-4" /> Create Plan
           </button>
         </div>
@@ -142,41 +150,45 @@ export function CurriculumDashboard() {
           </div>
         </motion.div>
 
-        {/* Module 2: Upcoming Session */}
-        <motion.div variants={fadeUp} className="bg-gradient-to-br from-indigo-900 to-purple-900 rounded-2xl p-6 shadow-md text-white flex flex-col relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-10">
-             <Target className="w-24 h-24" />
-          </div>
-          <div className="relative z-10 flex-1">
-            <h2 className="text-sm font-semibold text-purple-200 mb-1 tracking-wider uppercase flex items-center gap-2">
-               <Calendar className="w-4 h-4" /> Next Session
-            </h2>
-            <h3 className="text-2xl font-bold leading-tight mt-2">{UPCOMING_SESSION.title}</h3>
-            <div className="flex flex-wrap gap-2 mt-4 text-xs font-medium">
-              <span className="bg-white/20 px-2 py-1 rounded-md backdrop-blur-sm">{UPCOMING_SESSION.teamName}</span>
-              <span className="bg-white/20 px-2 py-1 rounded-md backdrop-blur-sm">{UPCOMING_SESSION.theme}</span>
-            </div>
-            
-            <div className="mt-6 space-y-3 bg-black/20 p-4 rounded-xl backdrop-blur-md border border-white/10">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 bg-purple-500/30 p-1.5 rounded-lg"><Clock className="w-4 h-4 text-purple-200" /></div>
-                <div>
-                  <p className="text-sm font-medium">Today, {UPCOMING_SESSION.startTime} - {UPCOMING_SESSION.endTime}</p>
-                  <p className="text-xs text-purple-200 opacity-80">{UPCOMING_SESSION.location}</p>
+        {/* Module 2: Upcoming Sessions */}
+        <motion.div variants={fadeUp} className="flex flex-col gap-4">
+          {upcomingSessions.slice(0, 2).map((session, idx) => (
+            <div key={session.id || idx} className="bg-gradient-to-br from-indigo-900 to-purple-900 rounded-2xl p-6 shadow-md text-white flex flex-col relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                 <Target className="w-24 h-24" />
+              </div>
+              <div className="relative z-10 flex-1">
+                <h2 className="text-sm font-semibold text-purple-200 mb-1 tracking-wider uppercase flex items-center gap-2">
+                   <Calendar className="w-4 h-4" /> {idx === 0 ? 'Next Session' : 'Upcoming Session'}
+                </h2>
+                <h3 className="text-2xl font-bold leading-tight mt-2">{session.title}</h3>
+                <div className="flex flex-wrap gap-2 mt-4 text-xs font-medium">
+                  <span className="bg-white/20 px-2 py-1 rounded-md backdrop-blur-sm">{session.teamName}</span>
+                  <span className="bg-white/20 px-2 py-1 rounded-md backdrop-blur-sm">{session.theme}</span>
+                </div>
+                
+                <div className="mt-6 space-y-3 bg-black/20 p-4 rounded-xl backdrop-blur-md border border-white/10">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 bg-purple-500/30 p-1.5 rounded-lg"><Clock className="w-4 h-4 text-purple-200" /></div>
+                    <div>
+                      <p className="text-sm font-medium">{new Date(session.date).toLocaleDateString()}, {session.startTime} - {session.endTime}</p>
+                      <p className="text-xs text-purple-200 opacity-80">{session.location}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 bg-purple-500/30 p-1.5 rounded-lg"><Target className="w-4 h-4 text-purple-200" /></div>
+                    <div>
+                      <p className="text-sm font-medium">Key Objective</p>
+                      <p className="text-xs text-purple-200 opacity-80">{session.objectives?.[0] || 'General training'}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 bg-purple-500/30 p-1.5 rounded-lg"><Target className="w-4 h-4 text-purple-200" /></div>
-                <div>
-                  <p className="text-sm font-medium">Key Objective</p>
-                  <p className="text-xs text-purple-200 opacity-80">{UPCOMING_SESSION.objectives[0]}</p>
-                </div>
-              </div>
+              <button className="relative z-10 w-full mt-6 bg-white text-indigo-950 font-bold py-2.5 rounded-lg text-sm hover:bg-gray-50 transition-colors shadow-lg">
+                View Full Session Plan
+              </button>
             </div>
-          </div>
-          <button className="relative z-10 w-full mt-6 bg-white text-indigo-950 font-bold py-2.5 rounded-lg text-sm hover:bg-gray-50 transition-colors shadow-lg">
-            View Full Session Plan
-          </button>
+          ))}
         </motion.div>
 
         {/* Module 3: Drill Library */}
@@ -239,6 +251,12 @@ export function CurriculumDashboard() {
         </motion.div>
 
       </div>
+      
+      <CreatePlanDrawer 
+        isOpen={isBuilderOpen} 
+        onClose={() => setIsBuilderOpen(false)} 
+        onSubmit={handleCreatePlan} 
+      />
     </motion.div>
   );
 }

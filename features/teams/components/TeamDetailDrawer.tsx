@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, Activity, Users, Settings, Target } from 'lucide-react';
+import { X, Calendar, Activity, Users, Settings, Target, Trophy, TrendingUp } from 'lucide-react';
 import { Team } from '../types/team.types';
 import { RosterTab } from './tabs/RosterTab';
 import { FormationTab } from './tabs/FormationTab';
@@ -32,25 +32,47 @@ export function TeamDetailDrawer({ team, onClose }: TeamDetailDrawerProps) {
           className="w-full max-w-4xl h-full bg-white border-l border-gray-200 shadow-2xl flex flex-col"
           onClick={e => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200" style={{ borderTop: `4px solid ${team.kits?.[0]?.primaryColor || 'transparent'}` }}>
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-center p-2">
-                 {team.crestUrl ? <img src={team.crestUrl} alt="crest" className="object-contain w-full h-full" /> : <ShieldPlaceholder />}
+          {/* Premium Hero Header */}
+          <div 
+            className="relative px-8 pt-12 pb-8 overflow-hidden shrink-0" 
+            style={{ 
+              background: `linear-gradient(135deg, ${team.kits?.[0]?.primaryColor || '#4f46e5'} 0%, #1e1b4b 100%)`,
+              color: 'white'
+            }}
+          >
+            {/* Background Pattern overlay for premium feel */}
+            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
+            
+            <button onClick={onClose} className="absolute top-6 right-6 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors z-10 backdrop-blur-sm">
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
+              <div className="flex items-center gap-5">
+                <div className="w-24 h-24 bg-white rounded-2xl p-2 shadow-2xl shrink-0">
+                   {team.crestUrl ? <img src={team.crestUrl} alt="crest" className="object-contain w-full h-full" /> : <ShieldPlaceholder />}
+                </div>
+                <div>
+                  <h2 className="text-3xl font-black tracking-tight drop-shadow-md">{team.name}</h2>
+                  <div className="flex items-center gap-3 text-white/80 mt-1.5 font-medium">
+                    <span className="bg-white/20 px-2.5 py-0.5 rounded-md backdrop-blur-sm">{team.ageGroup}</span>
+                    <span>{team.division}</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h2 className="text-2xl font-bold tracking-tight text-gray-900">{team.name}</h2>
-                <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-                  <span className="font-medium text-gray-900">{team.ageGroup}</span>
-                  <span>•</span>
-                  <span>{team.division}</span>
+              
+              <div className="flex items-center gap-6 bg-black/20 p-4 rounded-2xl backdrop-blur-sm border border-white/10">
+                <div>
+                  <p className="text-xs text-white/60 uppercase tracking-wider font-bold mb-1 flex items-center gap-1"><Trophy className="w-3.5 h-3.5"/> League Pos</p>
+                  <p className="text-xl font-bold">2nd</p>
+                </div>
+                <div className="w-px h-8 bg-white/20"></div>
+                <div>
+                  <p className="text-xs text-white/60 uppercase tracking-wider font-bold mb-1 flex items-center gap-1"><TrendingUp className="w-3.5 h-3.5"/> Top Scorer</p>
+                  <p className="text-xl font-bold">J. Smith (12)</p>
                 </div>
               </div>
             </div>
-            
-            <button onClick={onClose} className="p-2 bg-gray-50 hover:bg-gray-100 text-gray-500 rounded-full transition-colors">
-              <X className="w-5 h-5" />
-            </button>
           </div>
 
           {/* Navigation Tabs */}

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import * as motion from 'framer-motion/client';
 import { fadeUp, staggerContainer } from '@/lib/utils/animations';
-import { Search, Filter, Plus } from 'lucide-react';
+import { Search, Filter, Plus, Users, Calendar, Trophy, Activity } from 'lucide-react';
 import { useTeamStore } from '@/features/teams/store/useTeamStore';
 import { TeamCard } from '@/features/teams/components/TeamCard';
 import { EmptyState } from '@/components/feedback/EmptyState';
@@ -60,6 +60,42 @@ export default function TeamsPage() {
           >
             <Plus className="w-4 h-4" /> Create Team
           </button>
+        </div>
+      </motion.div>
+
+      {/* KPI Overview (Operational Hub) */}
+      <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-2">
+        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-2 text-gray-500">
+            <Users className="w-5 h-5 text-blue-500" />
+            <span className="text-sm font-medium">Total Players</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">412</div>
+          <p className="text-xs text-green-600 font-medium mt-1">+12 this month</p>
+        </div>
+        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-2 text-gray-500">
+            <Activity className="w-5 h-5 text-purple-500" />
+            <span className="text-sm font-medium">Active Teams</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">{teams.length}</div>
+          <p className="text-xs text-gray-500 mt-1">Across 4 divisions</p>
+        </div>
+        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-2 text-gray-500">
+            <Trophy className="w-5 h-5 text-orange-500" />
+            <span className="text-sm font-medium">Win Rate</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">68%</div>
+          <p className="text-xs text-green-600 font-medium mt-1">Top quartile</p>
+        </div>
+        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-2 text-gray-500">
+            <Calendar className="w-5 h-5 text-emerald-500" />
+            <span className="text-sm font-medium">Next Fixtures</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">14</div>
+          <p className="text-xs text-gray-500 mt-1">This weekend</p>
         </div>
       </motion.div>
 
