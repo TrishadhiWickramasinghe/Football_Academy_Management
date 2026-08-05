@@ -15,18 +15,18 @@ export function Header() {
   const [showProfile, setShowProfile] = useState(false);
 
   return (
-    <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 z-20">
+    <header className="flex h-16 items-center gap-4 bg-white border-b border-gray-100 shadow-sm px-4 lg:px-8 z-20">
       <div className="flex items-center gap-4">
         {role !== "SUPER_ADMIN" && <TenantSwitcher />}
       </div>
       <div className="w-full flex-1">
         <form>
           <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
             <Input
               type="search"
               placeholder="Search players, tournaments..."
-              className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
+              className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-900 rounded-full pl-10 pr-4 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-purple-500 transition-all shadow-sm md:w-2/3 lg:w-2/5 placeholder-gray-400"
             />
           </div>
         </form>
@@ -44,10 +44,10 @@ export function Header() {
         >
           <CircleUser className="h-5 w-5" />
           <div className="hidden md:flex flex-col items-start text-xs">
-            <span className="font-medium leading-none">{user?.name || "User"}</span>
-            <span className="text-muted-foreground mt-1">{role ? getRoleLabel(role) : ""}</span>
+            <span className="font-bold text-gray-900 leading-none">{user?.name || "User"}</span>
+            <span className="text-gray-500 font-medium mt-1">{role ? getRoleLabel(role) : ""}</span>
           </div>
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <ChevronDown className="h-4 w-4 text-gray-400" />
         </Button>
 
         {showProfile && (
