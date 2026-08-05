@@ -7,18 +7,13 @@ import { DataTable, ColumnDef } from '@/components/ui/DataTable';
 import { Player } from '@/features/players/types/player.types';
 import { Users, Activity, Stethoscope, UserCheck } from 'lucide-react';
 import { PlayerDetailDrawer } from '@/features/players/components/PlayerDetailDrawer';
-
-// Mock Data for UI presentation
-const MOCK_PLAYERS: Player[] = [
-  { id: '1', firstName: 'Marcus', lastName: 'Rashford', age: 14, dateOfBirth: '2010-10-31', team: 'U14 Elite', position: 'Forward', status: 'Active', medicalClearance: true },
-  { id: '2', firstName: 'Jude', lastName: 'Bellingham', age: 16, dateOfBirth: '2008-06-29', team: 'U16 Pro', position: 'Midfielder', status: 'Active', medicalClearance: true },
-  { id: '3', firstName: 'Phil', lastName: 'Foden', age: 12, dateOfBirth: '2012-05-28', team: 'U12 Academy', position: 'Midfielder', status: 'Injured', medicalClearance: false },
-  { id: '4', firstName: 'Bukayo', lastName: 'Saka', age: 15, dateOfBirth: '2009-09-05', team: 'U16 Pro', position: 'Winger', status: 'Active', medicalClearance: true },
-];
+import { usePlayerStore } from '@/features/players/store/usePlayerStore';
+import { AddPlayerModal } from '@/features/players/components/AddPlayerModal';
 
 export default function PlayersDirectoryPage() {
-  const [players] = useState<Player[]>(MOCK_PLAYERS);
+  const { players } = usePlayerStore();
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const columns: ColumnDef<Player>[] = [
     { 
@@ -69,7 +64,10 @@ export default function PlayersDirectoryPage() {
           <p className="text-gray-600 mt-1">Manage academy roster, profiles, and development plans.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="bg-purple-600 text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+          <button 
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-purple-600 text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+          >
             + Add Player
           </button>
         </div>
@@ -83,22 +81,24 @@ export default function PlayersDirectoryPage() {
             <span className="text-sm font-medium">Total Players</span>
           </div>
           <div className="text-2xl font-bold text-gray-900">{players.length + 142}</div>
-          <p className="text-xs text-green-600 font-medium mt-1">+3 this week</p>
+          <p className="text-xs text-green-600 font-medium mt-1">Dynamic via state</p>
         </div>
         <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center gap-3 mb-2 text-gray-500">
             <Stethoscope className="w-5 h-5 text-red-500" />
             <span className="text-sm font-medium">Medical Bay</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">4</div>
-          <p className="text-xs text-red-500 font-medium mt-1">2 returning soon</p>
+          <div className="text-2xl font-bold text-gray-900">{players.filter(p => p.status === 'Injured').length}</div>
+          <p className="text-xs text-red-500 font-medium mt-1">Injured players</p>
         </div>
         <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center gap-3 mb-2 text-gray-500">
             <Activity className="w-5 h-5 text-purple-500" />
             <span className="text-sm font-medium">Average Age</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">14.8</div>
+          <div className="text-2xl font-bold text-gray-900">
+            {(players.reduce((sum, p) => sum + p.age, 0) / (players.length || 1)).toFixed(1)}
+          </div>
           <p className="text-xs text-gray-500 mt-1">Across academy</p>
         </div>
         <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 shadow-sm">
@@ -106,7 +106,7 @@ export default function PlayersDirectoryPage() {
             <UserCheck className="w-5 h-5 text-orange-500" />
             <span className="text-sm font-medium">On Trial</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">7</div>
+          <div className="text-2xl font-bold text-gray-900">{players.filter(p => p.status === 'Trial').length}</div>
           <p className="text-xs text-gray-500 mt-1">Decisions pending</p>
         </div>
       </motion.div>
@@ -123,6 +123,11 @@ export default function PlayersDirectoryPage() {
       <PlayerDetailDrawer 
         player={selectedPlayer}
         onClose={() => setSelectedPlayer(null)}
+      />
+      
+      <AddPlayerModal 
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
       />
     </motion.div>
   );
