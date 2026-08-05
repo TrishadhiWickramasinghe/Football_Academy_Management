@@ -1,0 +1,810 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// CORE & MULTI-TENANT
+// -----------------------------------------------------------------------------
+
+enum OrganisationType {
+  ACADEMY
+  COMPANY
+  SCHOOL
+  FEDERATION
+}
+
+enum OrganisationStatus {
+  PENDING
+  TRIAL
+  ACTIVE
+  SUSPENDED
+  CANCELLED
+  ARCHIVED
+}
+
+model Organisation {
+  id               String             @id @default(cuid())
+  name             String
+  legalName        String?
+  type             OrganisationType
+  slug             String             @unique
+  country          String
+  primarySport     String             @default("Football")
+  website          String?
+  logoUrl          String?
+  plan             String?
+  billingFrequency String?
+  status           OrganisationStatus @default(PENDING)
+  defaultCurrency  String             @default("USD")
+  defaultLocale    String             @default("en")
+  timezone         String             @default("UTC")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Relationships
+  branding      OrganisationBranding?
+  users         User[]
+  players       Player[]
+  teams         Team[]
+  programs      Program[]
+  tournaments   Tournament[]
+  subscriptions Subscription[]
+  invoices      Invoice[]
+  payments      Payment[]
+  domains       Domain[]
+  auditLogs     AuditLog[]
+  drills        Drill[]
+  videos        Video[]
+  seasons       Season[]
+  evaluations   Evaluation[]
+}
+
+model OrganisationBranding {
+  id                          String       @id @default(cuid())
+  organisationId              String       @unique
+  organisation                Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  logoUrl                     String?
+  faviconUrl                  String?
+  primaryColor                String?
+  secondaryColor              String?
+  accentColor                 String?
+  customAppName               String?
+  emailSenderName             String?
+  replyToEmail                String?
+  removeAcademySphereBranding Boolean      @default(false)
+  termsUrl                    String?
+  privacyUrl                  String?
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model User {
+  id                String       @id @default(cuid())
+  organisationId    String
+  organisation      Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  clerkUserId       String       @unique
+  email             String
+  firstName         String
+  lastName          String
+  name              String?
+  avatarUrl         String?
+  phone             String?
+  role              String // ENUM in App (SUPER_ADMIN, ORG_ADMIN, HEAD_COACH, etc)
+  status            UserStatus   @default(ACTIVE)
+  preferredLanguage String       @default("en")
+  timezone          String       @default("UTC")
+  lastLoginAt       DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  playerGuardians PlayerGuardian[]
+  teamCoaches     TeamCoach[]
+  sessionCoaches  SessionCoach[]
+
+  @@index([organisationId])
+  @@index([email])
+}
+
+// -----------------------------------------------------------------------------
+// PLAYER & GUARDIANS
+// -----------------------------------------------------------------------------
+
+enum PlayerStatus {
+  TRIAL
+  ACTIVE
+  WAITLIST
+  INACTIVE
+  ALUMNI
+}
+
+enum Position {
+  GK
+  CB
+  LB
+  RB
+  CM
+  AM
+  LW
+  RW
+  ST
+}
+
+model Player {
+  id                String       @id @default(cuid())
+  organisationId    String
+  organisation      Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  firstName         String
+  lastName          String
+  fullName          String?
+  dateOfBirth       DateTime
+  gender            String?
+  profilePhotoUrl   String?
+  nationality       String?
+  primaryPosition   Position?
+  secondaryPosition Position?
+  schoolName        String?
+  jerseyNumber      String?
+  preferredLanguage String       @default("en")
+  enrolmentDate     DateTime?
+  developmentPhase  String?
+  status            PlayerStatus @default(ACTIVE)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Relationships
+  guardians        PlayerGuardian[]
+  medicalProfile   PlayerMedicalProfile?
+  consents         Consent[]
+  teamHistory      PlayerTeam[]
+  programEnrols    ProgramEnrollment[]
+  attendance       Attendance[]
+  evaluations      Evaluation[]
+  developmentPlans IndividualDevelopmentPlan[]
+  goals            Goal[]
+  cards            MatchCard[]
+  videos           Video[]
+  highlights       VideoHighlight[]
+  payments         Payment[]
+  invoices         Invoice[]
+
+  @@index([organisationId])
+  @@index([dateOfBirth])
+  @@index([status])
+}
+
+model PlayerGuardian {
+  id                        String   @id @default(cuid())
+  playerId                  String
+  player                    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  userId                    String
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  relationship              String
+  isPrimary                 Boolean  @default(false)
+  canViewMedicalInformation Boolean  @default(false)
+  canMakePayments           Boolean  @default(false)
+  canReceiveNotifications   Boolean  @default(true)
+  consentStatus             String?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@unique([playerId, userId])
+}
+
+model PlayerMedicalProfile {
+  id                    String   @id @default(cuid())
+  playerId              String   @unique
+  player                Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  medicalConditions     String? // Consider encryption at application level
+  allergies             String?
+  notes                 String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  updatedAt             DateTime @updatedAt
+}
+
+model Consent {
+  id                 String    @id @default(cuid())
+  playerId           String
+  player             Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  guardianId         String
+  consentType        String // PHOTO, VIDEO, MEDICAL, etc.
+  documentVersion    String
+  status             String // GRANTED, REVOKED
+  signedAt           DateTime  @default(now())
+  expiresAt          DateTime?
+  signatureReference String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// TEAMS, SEASONS & PROGRAMS
+// -----------------------------------------------------------------------------
+
+model Season {
+  id             String       @id @default(cuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  name           String
+  startDate      DateTime
+  endDate        DateTime
+  status         String // ACTIVE, UPCOMING, COMPLETED
+
+  teams    Team[]
+  sessions Session[]
+
+  @@index([organisationId])
+}
+
+model Team {
+  id             String       @id @default(cuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  name           String
+  ageGroup       String?
+  seasonId       String?
+  season         Season?      @relation(fields: [seasonId], references: [id])
+  status         String       @default("ACTIVE")
+  logoUrl        String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  coaches         TeamCoach[]
+  playerHistory   PlayerTeam[]
+  tournamentTeams TournamentTeam[]
+  evaluations     Evaluation[]
+  videos          Video[]
+
+  @@index([organisationId])
+  @@index([seasonId])
+}
+
+model TeamCoach {
+  id        String   @id @default(cuid())
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  coachId   String
+  coach     User     @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  role      String // HEAD_COACH, ASSISTANT_COACH
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@unique([teamId, coachId])
+}
+
+model PlayerTeam {
+  id           String    @id @default(cuid())
+  playerId     String
+  player       Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  teamId       String
+  team         Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  startDate    DateTime
+  endDate      DateTime?
+  status       String // ACTIVE, PAST
+  jerseyNumber String?
+  createdAt    DateTime  @default(now())
+
+  @@index([playerId])
+  @@index([teamId])
+}
+
+model Program {
+  id             String       @id @default(cuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  ageGroup       String?
+  type           String // REGULAR_TRAINING, CAMP, ELITE
+  capacity       Int?
+  price          Decimal?
+  currency       String?
+  status         String       @default("ACTIVE")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  enrollments ProgramEnrollment[]
+  sessions    Session[]
+
+  @@index([organisationId])
+}
+
+model ProgramEnrollment {
+  id        String    @id @default(cuid())
+  programId String
+  program   Program   @relation(fields: [programId], references: [id], onDelete: Cascade)
+  playerId  String
+  player    Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  status    String // ENROLLED, WAITLIST, CANCELLED
+  enrolledAt DateTime  @default(now())
+  startDate DateTime?
+  endDate   DateTime?
+  price     Decimal?
+  currency  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// SESSIONS, ATTENDANCE & DRILLS
+// -----------------------------------------------------------------------------
+
+model Session {
+  id             String       @id @default(cuid())
+  organisationId String
+  programId      String
+  program        Program      @relation(fields: [programId], references: [id], onDelete: Cascade)
+  seasonId       String?
+  season         Season?      @relation(fields: [seasonId], references: [id])
+  title          String
+  theme          String?
+  date           DateTime
+  startTime      DateTime
+  endTime        DateTime
+  location       String?
+  notes          String?
+  status         String       @default("SCHEDULED") // SCHEDULED, COMPLETED, CANCELLED
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coaches     SessionCoach[]
+  drills      SessionDrill[]
+  attendance  Attendance[]
+  evaluations Evaluation[]
+
+  @@index([programId])
+  @@index([date])
+}
+
+model SessionCoach {
+  id        String  @id @default(cuid())
+  sessionId String
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  coachId   String
+  coach     User    @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  role      String
+
+  @@unique([sessionId, coachId])
+}
+
+model Drill {
+  id               String        @id @default(cuid())
+  organisationId   String? // Null implies Global Drill
+  organisation     Organisation? @relation(fields: [organisationId], references: [id])
+  name             String
+  description      String?
+  category         String?
+  difficulty       String?
+  duration         Int? // minutes
+  videoUrl         String?
+  thumbnailUrl     String?
+  methodologyPhase String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessionDrills SessionDrill[]
+}
+
+model SessionDrill {
+  id        String  @id @default(cuid())
+  sessionId String
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  drillId   String
+  drill     Drill   @relation(fields: [drillId], references: [id], onDelete: Cascade)
+  order     Int
+  duration  Int? // minutes overrides Drill default
+  notes     String?
+}
+
+model Attendance {
+  id          String   @id @default(cuid())
+  sessionId   String
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  playerId    String
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  status      String // PRESENT, ABSENT, LATE, EXCUSED
+  checkInTime DateTime?
+  notes       String?
+  markedBy    String? // User ID
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sessionId, playerId])
+}
+
+// -----------------------------------------------------------------------------
+// EVALUATION & DEVELOPMENT
+// -----------------------------------------------------------------------------
+
+model Evaluation {
+  id             String       @id @default(cuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  playerId       String
+  player         Player       @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  coachId        String // User ID
+  teamId         String?
+  team           Team?        @relation(fields: [teamId], references: [id])
+  sessionId      String?
+  session        Session?     @relation(fields: [sessionId], references: [id])
+  evaluationType String
+  criteriaScores Json // Stores structured scores based on dynamic criteria templates
+  comments       String?
+  status         String // DRAFT, SUBMITTED
+  evaluationDate DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([playerId, evaluationDate])
+}
+
+model IndividualDevelopmentPlan {
+  id          String            @id @default(cuid())
+  playerId    String
+  player      Player            @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  coachId     String // User ID
+  title       String
+  summary     String?
+  startDate   DateTime
+  targetDate  DateTime
+  status      String // ACTIVE, COMPLETED
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  goals       DevelopmentGoal[]
+}
+
+model DevelopmentGoal {
+  id          String                    @id @default(cuid())
+  planId      String
+  plan        IndividualDevelopmentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  category    String
+  description String
+  target      String?
+  progress    Int                       @default(0)
+  status      String // IN_PROGRESS, ACHIEVED
+}
+
+// -----------------------------------------------------------------------------
+// TOURNAMENT & MATCH
+// -----------------------------------------------------------------------------
+
+model Tournament {
+  id                   String       @id @default(cuid())
+  organisationId       String
+  organisation         Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  name                 String
+  description          String?
+  format               String // ROUND_ROBIN, GROUP_AND_KNOCKOUT
+  startDate            DateTime
+  endDate              DateTime
+  registrationDeadline DateTime?
+  location             String?
+  status               String // DRAFT, REGISTRATION, ACTIVE, COMPLETED
+  maxTeams             Int?
+  entryFee             Decimal?
+  currency             String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teams   TournamentTeam[]
+  venues  Venue[]
+  matches Match[]
+
+  @@index([organisationId])
+}
+
+model TournamentTeam {
+  id                     String     @id @default(cuid())
+  tournamentId           String
+  tournament             Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  teamId                 String? // Reference to internal team
+  team                   Team?      @relation(fields: [teamId], references: [id])
+  externalOrganisationId String? // If team comes from outside
+  teamName               String
+  ageGroup               String?
+  group                  String?
+  seed                   Int?
+  registrationStatus     String // PENDING, CONFIRMED
+
+  createdAt DateTime @default(now())
+
+  @@unique([tournamentId, teamId])
+}
+
+model Venue {
+  id           String     @id @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  name         String
+  address      String?
+  fields       Field[]
+}
+
+model Field {
+  id      String  @id @default(cuid())
+  venueId String
+  venue   Venue   @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  name    String
+  matches Match[]
+}
+
+model Match {
+  id              String     @id @default(cuid())
+  tournamentId    String
+  tournament      Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  venueId         String?
+  fieldId         String?
+  field           Field?     @relation(fields: [fieldId], references: [id])
+  homeTeamId      String // Reference to TournamentTeam ID
+  awayTeamId      String // Reference to TournamentTeam ID
+  scheduledAt     DateTime
+  duration        Int? // minutes
+  status          String // SCHEDULED, IN_PROGRESS, COMPLETED
+  homeScore       Int        @default(0)
+  awayScore       Int        @default(0)
+  round           String?
+  group           String?
+  bracketPosition String?
+  finalizedAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  goals     Goal[]
+  cards     MatchCard[]
+  referees  MatchReferee[]
+  reports   MatchReport[]
+  videos    Video[]
+
+  @@index([tournamentId])
+  @@index([scheduledAt])
+}
+
+model MatchReferee {
+  id         String   @id @default(cuid())
+  matchId    String
+  match      Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  refereeId  String // User ID
+  role       String // MAIN, LINESMAN
+  status     String // ASSIGNED, ACCEPTED
+  assignedAt DateTime @default(now())
+}
+
+model Goal {
+  id       String  @id @default(cuid())
+  matchId  String
+  match    Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  playerId String? // Null if external player
+  player   Player? @relation(fields: [playerId], references: [id])
+  teamId   String // Reference to TournamentTeam
+  minute   Int
+  type     String // OPEN_PLAY, PENALTY
+  createdAt DateTime @default(now())
+}
+
+model MatchCard {
+  id       String  @id @default(cuid())
+  matchId  String
+  match    Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  playerId String // Null if external player
+  player   Player? @relation(fields: [playerId], references: [id])
+  teamId   String // Reference to TournamentTeam
+  type     String // YELLOW, RED
+  minute   Int
+  reason   String?
+}
+
+model MatchReport {
+  id          String   @id @default(cuid())
+  matchId     String
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  refereeId   String
+  notes       String?
+  incidents   String?
+  status      String
+  submittedAt DateTime @default(now())
+}
+
+model Award {
+  id           String  @id @default(cuid())
+  tournamentId String
+  type         String // MVP, GOLDEN_GLOVE
+  recipientId  String // Player ID or Team ID
+}
+
+// -----------------------------------------------------------------------------
+// VIDEO & HIGHLIGHTS
+// -----------------------------------------------------------------------------
+
+model Video {
+  id             String       @id @default(cuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  playerId       String?
+  player         Player?      @relation(fields: [playerId], references: [id])
+  teamId         String?
+  team           Team?        @relation(fields: [teamId], references: [id])
+  matchId        String?
+  match          Match?       @relation(fields: [matchId], references: [id])
+  muxAssetId     String?
+  muxPlaybackId  String?
+  title          String
+  description    String?
+  thumbnailUrl   String?
+  duration       Int? // seconds
+  visibility     String // PRIVATE, ORG_ONLY, PUBLIC
+  status         String // PROCESSING, READY
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  highlights VideoHighlight[]
+}
+
+model VideoHighlight {
+  id        String  @id @default(cuid())
+  videoId   String
+  video     Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  playerId  String?
+  player    Player? @relation(fields: [playerId], references: [id])
+  title     String
+  startTime Int // seconds
+  endTime   Int // seconds
+  type      String // GOAL, ASSIST, SAVE
+  tags      String? // Comma separated or JSON
+
+  createdAt DateTime @default(now())
+}
+
+// -----------------------------------------------------------------------------
+// BILLING & PAYMENTS
+// -----------------------------------------------------------------------------
+
+model Subscription {
+  id                   String       @id @default(cuid())
+  organisationId       String
+  organisation         Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  stripeSubscriptionId String?      @unique
+  plan                 String
+  billingFrequency     String // MONTHLY, ANNUAL
+  status               String // ACTIVE, PAST_DUE
+  currency             String
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  nextBillingDate      DateTime?
+  trialEndsAt          DateTime?
+  cancelledAt          DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  invoices  Invoice[]
+}
+
+model Invoice {
+  id              String        @id @default(cuid())
+  organisationId  String
+  organisation    Organisation  @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  playerId        String?
+  player          Player?       @relation(fields: [playerId], references: [id])
+  subscriptionId  String?
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
+  stripeInvoiceId String?       @unique
+  invoiceNumber   String
+  amount          Decimal
+  currency        String
+  status          String // DRAFT, OPEN, PAID, OVERDUE
+  issueDate       DateTime
+  dueDate         DateTime
+  paidAt          DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lineItems InvoiceLineItem[]
+}
+
+model InvoiceLineItem {
+  id            String  @id @default(cuid())
+  invoiceId     String
+  invoice       Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description   String
+  quantity      Int     @default(1)
+  unitAmount    Decimal
+  amount        Decimal
+  currency      String
+  referenceType String? // e.g. "PROGRAM_FEE"
+  referenceId   String? // e.g. programId
+}
+
+model Payment {
+  id                    String       @id @default(cuid())
+  organisationId        String
+  organisation          Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  playerId              String?
+  player                Player?      @relation(fields: [playerId], references: [id])
+  invoiceId             String? // Nullable if not tied to invoice
+  stripePaymentIntentId String?      @unique
+  stripeChargeId        String?
+  amount                Decimal
+  currency              String
+  status                String // SUCCEEDED, FAILED, PENDING
+  paymentMethod         String?
+  paidAt                DateTime?
+  refundedAt            DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// SAAS INFRASTRUCTURE (DOMAINS, AUDIT, NOTIFICATIONS)
+// -----------------------------------------------------------------------------
+
+model Domain {
+  id                String       @id @default(cuid())
+  organisationId    String
+  organisation      Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  hostname          String       @unique
+  type              String // SUBDOMAIN, CUSTOM
+  verificationToken String?
+  status            String // VERIFIED, PENDING
+  sslStatus         String // ACTIVE, PENDING
+  verifiedAt        DateTime?
+  sslExpiresAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id             String        @id @default(cuid())
+  organisationId String?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  actorUserId    String?
+  action         String
+  entityType     String
+  entityId       String
+  metadata       Json? // Only safe non-sensitive data
+  ipAddress      String?
+  userAgent      String?
+
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id             String    @id @default(cuid())
+  organisationId String
+  userId         String
+  type           String
+  title          String
+  message        String
+  channel        String // IN_APP, EMAIL, SMS, PUSH
+  status         String // UNREAD, READ
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+}
