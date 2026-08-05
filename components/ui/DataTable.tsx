@@ -39,12 +39,12 @@ export function DataTable<T>({
     <div className="space-y-4">
       {/* Table Toolbar */}
       <div className="flex items-center justify-between">
-        <div className="relative w-72">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+        <div className="relative w-72 mb-2">
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
           <input 
             type="text" 
             placeholder={searchPlaceholder}
-            className="w-full bg-white text-gray-900 border border-gray-200 rounded-md pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-400 shadow-sm"
+            className="w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-full pl-10 pr-4 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-400 shadow-sm transition-all"
           />
         </div>
         {/* Placeholder for Filters/Actions */}
