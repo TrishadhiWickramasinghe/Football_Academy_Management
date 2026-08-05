@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0B1121;
-  --foreground: #f8fafc;
+  --background: #F3F4F6; /* Light gray background */
+  --foreground: #111827; /* Dark text */
   
-  --card: #131C31;
-  --card-foreground: #f8fafc;
+  --card: #ffffff;
+  --card-foreground: #111827;
   
-  --popover: #131C31;
-  --popover-foreground: #f8fafc;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
   
   --primary: #FF5722; /* Vibrant Coral/Orange */
   --primary-foreground: #ffffff;
@@ -49,14 +49,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0B1121;
-    --foreground: #f8fafc;
+    --background: #F3F4F6; /* Keep it light per user request */
+    --foreground: #111827;
     
-    --card: #131C31;
-    --card-foreground: #f8fafc;
+    --card: #ffffff;
+    --card-foreground: #111827;
     
-    --popover: #131C31;
-    --popover-foreground: #f8fafc;
+    --popover: #ffffff;
+    --popover-foreground: #111827;
     
     --primary: #FF5722;
     --primary-foreground: #ffffff;
