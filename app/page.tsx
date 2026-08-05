@@ -3,12 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { motion, useScroll, useTransform, Variants } from "framer-motion"
-import { 
-  ArrowRight, Trophy, Users, Activity, Play, Shield, Globe, 
-  ShieldCheck, Smartphone, Settings, BarChart, CreditCard, Building2,
-  FileSpreadsheet, MessageCircle, FileText, CheckCircle2, ChevronRight
-} from "lucide-react"
-
+import { Trophy, CheckCircle2, ArrowRight, Activity, Users, Shield, Globe, Play, MessageCircle, Video, TrendingUp, CreditCard, Calendar, Star, FileSpreadsheet, FileText, ShieldCheck, Smartphone, Settings, BarChart, Building2, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
@@ -101,26 +96,11 @@ export default function Home() {
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="rounded-full h-14 px-8 text-base font-bold border-border/50 hover:bg-muted/50 hover:text-foreground transition-colors backdrop-blur-sm">
-                  Explore the Platform
+                <Button size="lg" variant="outline" className="rounded-full h-14 px-8 text-base font-bold border-border/50 hover:bg-muted/50 hover:text-foreground transition-colors backdrop-blur-sm" asChild>
+                  <Link href="#features">
+                    Explore Features
+                  </Link>
                 </Button>
-              </motion.div>
-
-              {/* Ecosystem Visual */}
-              <motion.div variants={itemVariants} className="mt-24 w-full max-w-4xl relative">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
-                  {['Player Development', 'AI Insights', 'Coach Training', 'Tournaments', 'Live Scores', 'Parent Portal', 'Payments', 'Analytics'].map((item, i) => (
-                    <motion.div 
-                      key={item}
-                      className="bg-black/80 backdrop-blur-md border border-primary/40 shadow-[0_4px_20px_rgba(232,74,39,0.15)] rounded-xl p-4 flex items-center justify-center text-sm font-bold text-primary hover:bg-primary hover:border-primary hover:text-white hover:shadow-[0_0_30px_rgba(232,74,39,0.5)] transition-all cursor-pointer"
-                      whileHover={{ y: -5, scale: 1.02 }}
-                    >
-                      {item}
-                    </motion.div>
-                  ))}
-                </div>
-                {/* Connecting lines abstraction */}
-                <div className="absolute inset-0 top-1/2 -translate-y-1/2 border-t border-b border-secondary/20 -z-10 h-16 w-full blur-[1px]"></div>
               </motion.div>
             </motion.div>
           </div>
@@ -355,6 +335,90 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Bento Box Features */}
+        <section className="py-24 bg-slate-50 relative overflow-hidden" id="features">
+          <div className="container mx-auto px-4 md:px-8 max-w-6xl relative z-10">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-slate-900">Everything you need to win</h2>
+              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                A complete suite of powerful tools designed specifically for the modern football academy ecosystem.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Feature 1 - Large */}
+              <div className="md:col-span-2 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative flex flex-col md:flex-row">
+                <div className="p-8 md:p-12 md:w-3/5 relative z-10 flex flex-col justify-center bg-white">
+                  <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-8 group-hover:scale-110 transition-transform">
+                    <Video className="h-7 w-7" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">AI Video Analysis & Integrations</h3>
+                  <p className="text-slate-600 max-w-md leading-relaxed">
+                    Seamlessly integrate with Veo and HUDL. Analyze matches, clip highlights, and share tactical feedback directly with players and parents in real-time right from your dashboard.
+                  </p>
+                </div>
+                <div className="relative h-64 md:h-auto md:w-2/5 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-white via-transparent to-transparent z-10"></div>
+                  <Image 
+                    src="/images/football-07.jpg" 
+                    alt="Players in action" 
+                    fill 
+                    className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                  />
+                </div>
+              </div>
+              
+              {/* Feature 2 - Small */}
+              <div className="rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 p-8 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative text-white">
+                <div className="relative z-10">
+                  <div className="h-14 w-14 bg-white/10 rounded-2xl flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform">
+                    <TrendingUp className="h-7 w-7" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 tracking-tight">Player Development</h3>
+                  <p className="text-slate-300 leading-relaxed">
+                    Track KPIs, generate detailed evaluation reports, and monitor progression across multiple seasons.
+                  </p>
+                </div>
+              </div>
+
+              {/* Feature 3 - Small */}
+              <div className="rounded-3xl bg-white border border-gray-100 p-8 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative">
+                <div className="relative z-10">
+                  <div className="h-14 w-14 bg-green-100 rounded-2xl flex items-center justify-center text-green-600 mb-8 group-hover:scale-110 transition-transform">
+                    <CreditCard className="h-7 w-7" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">Automated Finance</h3>
+                  <p className="text-slate-600 leading-relaxed">
+                    Collect monthly subscriptions and match fees effortlessly with our powerful, built-in Stripe integration.
+                  </p>
+                </div>
+              </div>
+
+              {/* Feature 4 - Large */}
+              <div className="md:col-span-2 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative flex flex-col md:flex-row-reverse">
+                <div className="p-8 md:p-12 md:w-3/5 relative z-10 flex flex-col justify-center bg-white">
+                  <div className="h-14 w-14 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600 mb-8 group-hover:scale-110 transition-transform">
+                    <Calendar className="h-7 w-7" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">Smart Scheduling & Attendance</h3>
+                  <p className="text-slate-600 max-w-md leading-relaxed">
+                    Manage training sessions, match days, and tournaments. Track attendance automatically and sync schedules directly to parents' and players' phones with push notifications.
+                  </p>
+                </div>
+                <div className="relative h-64 md:h-auto md:w-2/5 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-white via-transparent to-transparent z-10"></div>
+                  <Image 
+                    src="/images/football-08.jpg" 
+                    alt="Football on pitch" 
+                    fill 
+                    className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 5. Multi-Tenant Showcase */}
         <section className="py-32 relative overflow-hidden bg-slate-50 border-y border-border/50">
           {/* Right-side background image */}
@@ -421,6 +485,47 @@ export default function Home() {
                     </div>
                   </div>
                 </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+          <div className="container mx-auto px-4 md:px-8 max-w-6xl relative z-10">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Trusted by Elite Academies</h2>
+              <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+                Hear what top academy directors and head coaches have to say about running their operations on AcademySphere.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { quote: "AcademySphere completely transformed how we operate. Collecting fees and sharing tactical analysis is now completely automated. It saved us countless hours.", name: "David Miller", role: "Academy Director, London Elite" },
+                { quote: "The parents love the transparency. They can see exactly how their child is progressing, view attendance, and watch match highlights instantly on their phones.", name: "Sarah Jenkins", role: "Head Coach, Westside FC" },
+                { quote: "We scaled from 5 teams to 15 in one year, and we couldn't have done it without the robust, scalable infrastructure of this platform.", name: "Michael Chang", role: "Operations Manager, City Youth" }
+              ].map((testimonial, i) => (
+                <div key={i} className="bg-slate-800/50 border border-slate-700/50 rounded-3xl p-8 hover:bg-slate-800 transition-colors shadow-xl">
+                  <div className="flex gap-1 mb-6 text-amber-400">
+                    <Star className="h-5 w-5 fill-current" />
+                    <Star className="h-5 w-5 fill-current" />
+                    <Star className="h-5 w-5 fill-current" />
+                    <Star className="h-5 w-5 fill-current" />
+                    <Star className="h-5 w-5 fill-current" />
+                  </div>
+                  <p className="text-lg text-slate-300 mb-8 leading-relaxed font-medium">"{testimonial.quote}"</p>
+                  <div className="flex items-center gap-4 mt-auto">
+                    <div className="h-12 w-12 rounded-full bg-slate-700 flex items-center justify-center text-xl font-bold text-slate-300 border border-slate-600">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white tracking-tight">{testimonial.name}</h4>
+                      <p className="text-sm text-slate-400">{testimonial.role}</p>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
