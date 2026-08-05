@@ -40,21 +40,21 @@ export function DataTable<T>({
       {/* Table Toolbar */}
       <div className="flex items-center justify-between">
         <div className="relative w-72">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
           <input 
             type="text" 
             placeholder={searchPlaceholder}
-            className="w-full bg-background border border-input rounded-md pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            className="w-full bg-white text-gray-900 border border-gray-200 rounded-md pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-400 shadow-sm"
           />
         </div>
         {/* Placeholder for Filters/Actions */}
       </div>
 
       {/* Table Container */}
-      <div className="rounded-md border overflow-hidden">
+      <div className="rounded-xl border border-gray-100 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-muted-foreground bg-muted/50 uppercase border-b">
+            <thead className="text-xs text-black font-bold bg-gray-50 uppercase border-b border-gray-200">
               <tr>
                 {columns.map((col, i) => (
                   <th key={i} className="px-4 py-3 font-medium">{col.header}</th>
@@ -66,7 +66,7 @@ export function DataTable<T>({
                 <tr 
                   key={rowIndex} 
                   onClick={() => onRowClick?.(item)}
-                  className={`border-b last:border-0 hover:bg-muted/30 transition-colors ${onRowClick ? 'cursor-pointer' : ''}`}
+                  className={`border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors ${onRowClick ? 'cursor-pointer' : ''}`}
                 >
                   {columns.map((col, colIndex) => (
                     <td key={colIndex} className="px-4 py-3">
