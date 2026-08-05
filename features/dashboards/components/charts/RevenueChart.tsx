@@ -61,7 +61,7 @@ export function RevenueChart({ data, isLoading }: RevenueChartProps) {
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
                   itemStyle={{ color: 'hsl(var(--foreground))' }}
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, undefined]}
+                  formatter={(value: any) => [`$${Number(value).toLocaleString()}`, undefined]}
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
                 <Line 

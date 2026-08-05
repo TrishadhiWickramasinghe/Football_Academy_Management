@@ -104,3 +104,35 @@ export interface SuperAdminDashboardData {
   recentActivity: RecentActivity[]
   alerts: SystemAlert[]
 }
+
+export type TimeRange = 'today' | '7d' | '30d' | '3m' | '6m' | '12m' | 'custom';
+
+export interface DashboardFilters {
+  dateRange: TimeRange;
+  locationId?: string;
+  teamId?: string;
+  programId?: string;
+}
+
+export interface OrgAdminMetrics {
+  activePlayers: MetricComparison;
+  monthlyRevenue: MetricComparison;
+  activeTeams: MetricComparison;
+  attendanceRate: MetricComparison;
+}
+
+export interface UpcomingEvent {
+  id: string;
+  title: string;
+  type: 'Training' | 'Match' | 'Tournament' | 'Camp' | 'Meeting';
+  date: string; // ISO string
+  location: string;
+  isLive?: boolean;
+}
+
+export interface OrgAdminDashboardData {
+  kpis: OrgAdminMetrics;
+  upcomingEvents: UpcomingEvent[];
+  recentActivity: RecentActivity[];
+  alerts: SystemAlert[];
+}
