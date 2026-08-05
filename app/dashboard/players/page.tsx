@@ -5,6 +5,8 @@ import * as motion from 'framer-motion/client';
 import { fadeUp, staggerContainer } from '@/lib/utils/animations';
 import { DataTable, ColumnDef } from '@/components/ui/DataTable';
 import { Player } from '@/features/players/types/player.types';
+import { Users, Activity, Stethoscope, UserCheck } from 'lucide-react';
+import { PlayerDetailDrawer } from '@/features/players/components/PlayerDetailDrawer';
 
 // Mock Data for UI presentation
 const MOCK_PLAYERS: Player[] = [
@@ -16,6 +18,7 @@ const MOCK_PLAYERS: Player[] = [
 
 export default function PlayersDirectoryPage() {
   const [players] = useState<Player[]>(MOCK_PLAYERS);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
   const columns: ColumnDef<Player>[] = [
     { 
@@ -58,28 +61,69 @@ export default function PlayersDirectoryPage() {
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
-      className="p-4 lg:p-8 space-y-8 max-w-7xl mx-auto"
+      className="p-4 lg:p-8 space-y-6 bg-white min-h-[calc(100vh-4rem)] m-2 lg:m-4 rounded-3xl text-gray-900 shadow-lg border border-gray-100"
     >
-      <motion.div variants={fadeUp} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-6">
+      <motion.div variants={fadeUp} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Players Directory</h1>
-          <p className="text-muted-foreground mt-1">Manage academy roster, profiles, and development plans.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 drop-shadow-sm">Players Directory</h1>
+          <p className="text-gray-600 mt-1">Manage academy roster, profiles, and development plans.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium text-sm hover:opacity-90 transition-opacity">
+          <button className="bg-purple-600 text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
             + Add Player
           </button>
         </div>
       </motion.div>
 
-      <motion.div variants={fadeUp} className="bg-card border rounded-xl shadow-sm p-4">
+      {/* KPI Overview (Operational Hub) */}
+      <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-2">
+        <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-2 text-gray-500">
+            <Users className="w-5 h-5 text-blue-500" />
+            <span className="text-sm font-medium">Total Players</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">{players.length + 142}</div>
+          <p className="text-xs text-green-600 font-medium mt-1">+3 this week</p>
+        </div>
+        <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-2 text-gray-500">
+            <Stethoscope className="w-5 h-5 text-red-500" />
+            <span className="text-sm font-medium">Medical Bay</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">4</div>
+          <p className="text-xs text-red-500 font-medium mt-1">2 returning soon</p>
+        </div>
+        <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-2 text-gray-500">
+            <Activity className="w-5 h-5 text-purple-500" />
+            <span className="text-sm font-medium">Average Age</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">14.8</div>
+          <p className="text-xs text-gray-500 mt-1">Across academy</p>
+        </div>
+        <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-2 text-gray-500">
+            <UserCheck className="w-5 h-5 text-orange-500" />
+            <span className="text-sm font-medium">On Trial</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">7</div>
+          <p className="text-xs text-gray-500 mt-1">Decisions pending</p>
+        </div>
+      </motion.div>
+
+      <motion.div variants={fadeUp} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-1">
         <DataTable 
           data={players} 
           columns={columns} 
           searchPlaceholder="Search players by name or team..."
-          onRowClick={(player) => console.log('Navigate to profile:', player.id)}
+          onRowClick={(player) => setSelectedPlayer(player)}
         />
       </motion.div>
+      
+      <PlayerDetailDrawer 
+        player={selectedPlayer}
+        onClose={() => setSelectedPlayer(null)}
+      />
     </motion.div>
   );
 }
